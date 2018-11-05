@@ -104,6 +104,38 @@ public class Worm {
 
     }
 
+    public void RemoveFromBack(int amount)
+    {
+        //Determine current vertex count
+        int vertCount = vertices.Length;
+        int triCount = triangles.Length;
+
+        //Create properly sized arrays to hold new mesh data
+        Vector3[] v = new Vector3[vertCount - (verticesPerSegment * amount)];
+        int[] t = new int[triCount - (6 * verticesPerSegment * amount)];
+        Vector3[] n = new Vector3[vertCount - (verticesPerSegment * amount)];
+
+        //Copy over all data except for [amount] at the back
+        for (int i = 0; i < vertCount - (verticesPerSegment * amount); i++)
+        {
+            v[i] = vertices[i + 2 * amount];
+            n[i] = normals[i + 2 * amount];
+        }
+        for (int i = 0; i < triCount - (6 * verticesPerSegment * amount); i++)
+        {
+            t[i] = triangles[i];
+        }
+
+        vertices = v;
+        triangles = t;
+        normals = n;
+    }
+
+    public bool ExceedsSegmentCount(int x)
+    {
+        return vertices.Length > x * verticesPerSegment;
+    }
+
    private Vector3[] CalculateCoords(Vector3 following)
     {
         headOrientation = (following - headPosition).normalized;

@@ -4,29 +4,42 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-
 public class WormController : MonoBehaviour {
 
     private Worm worm;
-    private Vector3 follow;
-
     private MeshFilter mF;
+
+    public Transform point;
+    public Transform cam;
+    private Vector3 camOffset;
+
+    public float wormSpeed = 3f;
+    public float rotationScale = 5f;
+    public int maxSegments = 100;
+    public float segmentSize = .1f;
 
     private void Awake()
     {
+        camOffset = cam.position;
+
         mF = GetComponent<MeshFilter>();
         worm = new Worm(mF.mesh);
     }
 
     private void Update()
     {
-        if (Mathf.Abs((follow - worm.GetHeadPosition()).magnitude) > 1f)
+        if (Mathf.Abs((point.position - worm.GetHeadPosition()).magnitude) > segmentSize)
         {
-            worm.AddToFront(follow);
+            worm.AddToFront(point.position);
+        }    
+        if (worm.ExceedsSegmentCount(maxSegments))
+        {
+            worm.RemoveFromBack(5);
         }
-
-        follow += new Vector3(.5f * Time.deltaTime, 0, 0);
         UpdateMesh();
+
+        cam.position = worm.GetHeadPosition() + camOffset;
+        cam.LookAt(worm.GetHeadPosition());
 
 
     }
