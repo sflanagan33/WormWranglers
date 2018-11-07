@@ -4,25 +4,25 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshCollider))]
 public class WormController : MonoBehaviour {
 
     private Worm worm;
     private MeshFilter mF;
-
+    private MeshCollider mC;
+    // point that the head follows
     public Transform point;
-    public Transform cam;
-    private Vector3 camOffset;
 
-    public float wormSpeed = 3f;
-    public float rotationScale = 5f;
     public int maxSegments = 100;
     public float segmentSize = .1f;
+    public int backRemovalSegments = 10;
 
     private void Awake()
     {
-        camOffset = cam.position;
-
         mF = GetComponent<MeshFilter>();
+        mC = GetComponent<MeshCollider>();
+        mC.inflateMesh = true;
+        mC.skinWidth = .1f;
         worm = new Worm(mF.mesh);
     }
 
@@ -31,22 +31,21 @@ public class WormController : MonoBehaviour {
         if (Mathf.Abs((point.position - worm.GetHeadPosition()).magnitude) > segmentSize)
         {
             worm.AddToFront(point.position);
-        }    
+            UpdateMesh();
+        }
         if (worm.ExceedsSegmentCount(maxSegments))
         {
-            worm.RemoveFromBack(5);
+            worm.RemoveFromBack(backRemovalSegments);
+            UpdateMesh();
         }
-        UpdateMesh();
-
-        cam.position = worm.GetHeadPosition() + camOffset;
-        cam.LookAt(worm.GetHeadPosition());
-
-
     }
 
     private void UpdateMesh()
     {
+        Mesh m = worm.ToMesh();
         mF.mesh = null;
-        mF.mesh = worm.ToMesh();
+        mF.mesh = m;
+        mC.sharedMesh = null;
+        mC.sharedMesh = m;
     }
 }
