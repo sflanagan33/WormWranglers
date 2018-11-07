@@ -19,6 +19,7 @@ public class Worm {
     public Worm(Mesh m)
     {
         crossSection = m;
+        crossSection = OrganizeVertices(crossSection);
 
         vertices = crossSection.vertices;
         triangles = crossSection.triangles;
@@ -33,15 +34,10 @@ public class Worm {
     {
         Mesh m = new Mesh();
         m.vertices = vertices;
+
         m.triangles = triangles;
         m.normals = normals;
         m.RecalculateNormals();
-        string x = "";
-        foreach (Vector3 v in vertices)
-        {
-            x += v.ToString() + " ";
-        }
-        Debug.Log(x);
 
         return m;
     }
@@ -55,11 +51,11 @@ public class Worm {
         int[] t = new int[triCount + (6 * verticesPerSegment)];
         Vector3[] n = new Vector3[vertCount + verticesPerSegment];
 
+
         // Copy in existing data
         for (int i = 0; i < vertCount; i++)
         {
             v[i] = vertices[i];
-            n[i] = normals[i];
         }
         for (int i = 0; i < triCount; i++)
         {
@@ -72,35 +68,46 @@ public class Worm {
         for (int i = vertCount; i < vertCount + verticesPerSegment; i++)
         {
             v[i] = newCoords[i - vertCount];
+            float ratio = (i - vertCount) / (float)verticesPerSegment;
+            GameObject pt = GameObject.Instantiate(Resources.Load<GameObject>("Worm/point"));
+            pt.transform.position = v[i];
+            pt.GetComponent<Renderer>().material.color = new Color(ratio, ratio, ratio);
         }
         // attempt to link the triangles
-        for (int i = 0; i < verticesPerSegment; i++)
+
+        // first side
+        t[triCount] = vertCount - verticesPerSegment; // first old point
+        t[triCount + 1] = vertCount - verticesPerSegment + 1; //next old point
+        t[triCount + 2] = vertCount; // first new point
+
+        t[triCount + 4] = vertCount; // first new point
+        t[triCount + 3] = vertCount + 1; // next new point
+        t[triCount + 5] = vertCount - verticesPerSegment + 1; //next old point
+        for (int i = 1; i < verticesPerSegment - 1; i ++)
         {
-            // FIX //
+            t[triCount + 6 * i] = vertCount - verticesPerSegment + i;
+            t[triCount + 6 * i + 1] = vertCount - verticesPerSegment + 1 + i;
+            t[triCount + 6 * i + 2] = vertCount + i;
 
-
-            // left triangle
-            t[triCount + 3 * i] = vertCount - verticesPerSegment + i;
-            t[triCount + 1 + 3 * i] = vertCount + i;
-            t[triCount + 2 + 3 * i] = vertCount - 1 + i;
-            // right triangle
-            t[triCount + 3 + 3 * i] = vertCount + i;
-            t[triCount + 4 + 3 * i] = vertCount - 1 + i;
-            t[triCount + 5 + 3 * i] = vertCount - verticesPerSegment + i + 1;
-
-
+            t[triCount + 6 * i + 4] = vertCount + i;
+            t[triCount + 6 * i + 3] = vertCount + 1 + i;
+            t[triCount + 6 * i + 5] = vertCount - verticesPerSegment + 1 + i;
         }
-        // add normal data /* DO LATER */
-        for (int i = vertCount; i < vertCount + verticesPerSegment; i++)
-        {
-            n[i] = (crossSection.vertices[i - vertCount]).normalized;
-        }
+        int lastIdx = triCount + (6 * (verticesPerSegment - 1));
+        t[lastIdx] = vertCount - 1; // last old point
+        t[lastIdx + 1] = vertCount - verticesPerSegment; //first old point
+        t[lastIdx + 2] = vertCount + verticesPerSegment - 1; // last new point
+
+        t[lastIdx + 4] = vertCount + verticesPerSegment - 1; // last new point
+        t[lastIdx + 3] = vertCount; // first new point
+        t[lastIdx + 5] = vertCount - 1; //last old point
+
+        // assign normals
 
         // assign all this back to Worm
         vertices = v;
         triangles = t;
         normals = n;
-
 
     }
 
@@ -149,10 +156,61 @@ public class Worm {
         Vector3[] csV = crossSection.vertices;
         for (int i = 0; i < csV.Length; i++)
         {
-            /* This is almost certainly wrong */
-            points[i] = headPosition + csV[i];
+            // rotate and offset to the correct position
+            // Change first input to signedangle to match however the mesh is oriented
+            points[i] = headPosition + Quaternion.Euler(0, Vector3.SignedAngle(Vector3.right, headOrientation, Vector3.up), 0) * csV[i];
         }
         return points;
+
+    }
+
+    private Mesh OrganizeVertices(Mesh m)
+    {
+        Vector3[] org = m.vertices;
+        List<Vector3> verts = new List<Vector3>();
+        foreach (Vector3 v in org)
+        {
+            verts.Add(v);
+        }
+        Vector3[] news = new Vector3[org.Length];
+        news[0] = verts[org.Length - 1];
+        verts.Remove(verts[org.Length - 1]);
+        // find a closest point every time
+        int newsIdx = 0;
+        while (verts.Count != 0)
+        {
+            float min = Mathf.Infinity;
+            int vertsIdx = -1;
+            for (int i = 0; i < verts.Count; i++)
+            {
+                float dist = Mathf.Abs((news[newsIdx] - verts[i]).magnitude);
+                if (dist < min)
+                {
+                    min = dist;
+                    vertsIdx = i;
+                }
+            }
+            // add to news and remove from list
+            news[++newsIdx] = verts[vertsIdx];
+            verts.Remove(verts[vertsIdx]);
+        }
+        m.vertices = news;
+        //debug
+        string x = "";
+        foreach (Vector3 v in org)
+        {
+            x += v.ToString() + "\n";
+        }
+        Debug.Log(x);
+        x = "";
+        foreach (Vector3 v in news)
+        {
+            x += v.ToString() + "\n";
+        }
+        Debug.Log(x);
+
+
+        return m;
 
     }
 
