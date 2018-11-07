@@ -20,6 +20,7 @@ public class Worm {
     {
         crossSection = m;
         crossSection = OrganizeVertices(crossSection);
+        crossSection = CloseHole(crossSection);
 
         vertices = crossSection.vertices;
         triangles = crossSection.triangles;
@@ -69,9 +70,6 @@ public class Worm {
         {
             v[i] = newCoords[i - vertCount];
             float ratio = (i - vertCount) / (float)verticesPerSegment;
-            GameObject pt = GameObject.Instantiate(Resources.Load<GameObject>("Worm/point"));
-            pt.transform.position = v[i];
-            pt.GetComponent<Renderer>().material.color = new Color(ratio, ratio, ratio);
         }
         // attempt to link the triangles
 
@@ -100,7 +98,7 @@ public class Worm {
 
         t[lastIdx + 4] = vertCount + verticesPerSegment - 1; // last new point
         t[lastIdx + 3] = vertCount; // first new point
-        t[lastIdx + 5] = vertCount - 1; //last old point
+        t[lastIdx + 5] = vertCount - verticesPerSegment; //last old point
 
         // assign normals
 
@@ -125,8 +123,8 @@ public class Worm {
         //Copy over all data except for [amount] at the back
         for (int i = 0; i < vertCount - (verticesPerSegment * amount); i++)
         {
-            v[i] = vertices[i + 2 * amount];
-            n[i] = normals[i + 2 * amount];
+            v[i] = vertices[i + verticesPerSegment * amount];
+            n[i] = normals[i + verticesPerSegment * amount];
         }
         for (int i = 0; i < triCount - (6 * verticesPerSegment * amount); i++)
         {
@@ -195,23 +193,20 @@ public class Worm {
             verts.Remove(verts[vertsIdx]);
         }
         m.vertices = news;
-        //debug
-        string x = "";
-        foreach (Vector3 v in org)
-        {
-            x += v.ToString() + "\n";
-        }
-        Debug.Log(x);
-        x = "";
-        foreach (Vector3 v in news)
-        {
-            x += v.ToString() + "\n";
-        }
-        Debug.Log(x);
-
-
         return m;
+    }
 
+    private Mesh CloseHole(Mesh m)
+    {
+        int[] t = new int[3 * verticesPerSegment];
+        for (int i = 1; i < verticesPerSegment - 1; i++)
+        {
+            t[3 * i] = 0;
+            t[3 * i + 1] = i;
+            t[3 * i + 2] = i + 1;
+        }
+        m.triangles = t;
+        return m;
     }
 
     public Vector3 GetHeadPosition()
