@@ -2,39 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WormCursor : MonoBehaviour {
-
+public class WormCursor : MonoBehaviour
+{
     public float speed;
     public float rotation;
-    public float segmentWidth;
-    private float maxAngle;
-
-    //The current stored angle of rotation
-    private float currentAngle;
 
     private void Awake()
     {
-        //Figure out the max safe angle of rotation (lots of math)
-        float w = segmentWidth;
-        float l = FindObjectOfType<WormController>().segmentSize;
-        float x = Mathf.Sqrt(Mathf.Pow(l, 2) + Mathf.Pow(w, 2)) - w;
-        float alpha = Mathf.Atan(w / l);
-        float a = Mathf.Sqrt(Mathf.Pow(x, 2) + Mathf.Pow(l, 2) - (2 * x * l * Mathf.Cos(alpha)));
-
-        maxAngle = 180 - Degrees(Mathf.Asin(x * a / (Mathf.Sin(alpha))));
+        SnapToGround();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        Vector3 forward = transform.forward;
-        // move 
-        transform.position += forward * speed * Time.deltaTime;
-        // rotate
-        transform.Rotate(Vector3.up, rotation * Time.deltaTime * Input.GetAxis("Horizontal"));
+        // Rotate with player input
+
+        float h = Input.GetAxis("Horizontal");
+        h = Mathf.PerlinNoise(Time.time * 0.5f, 0) * 2f - 1f; // brilliant AI
+
+        transform.Rotate(Vector3.up, rotation * Time.deltaTime * h);
+
+        // Move in the forward direction
+
+        transform.position += transform.forward * speed * Time.deltaTime;
+
+        // Place on top of terrain
+
+        SnapToGround();
     }
 
-    private float Degrees(float angle)
+    private void SnapToGround()
     {
-        return angle * 180 / Mathf.PI;
+        Ray ray = new Ray(transform.position + Vector3.up * 100f, Vector3.down);
+        RaycastHit hitInfo;
+        float maxDistance = 200f;
+        int layerMask = LayerMask.GetMask("Terrain");
+        Physics.Raycast(ray, out hitInfo, maxDistance, layerMask);
+
+        Vector3 p = transform.position;
+        p.y = hitInfo.point.y;
+        transform.position = p;
     }
 }
