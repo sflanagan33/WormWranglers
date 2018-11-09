@@ -24,9 +24,15 @@ public class WormController : MonoBehaviour {
         mC.inflateMesh = true;
         mC.skinWidth = .1f;
         worm = new Worm(mF.mesh);
+        // for debugging
+        worm.AddToFront(new Vector3(2, 0, 0));
+        UpdateMesh();
+        mF.mesh = worm.CloseHoleFront(mF.mesh);
+        mF.mesh.RecalculateNormals();
+        worm.DebugMesh(mF.mesh);
     }
 
-    private void Update()
+    private void Update___()
     {
         if (Mathf.Abs((point.position - worm.GetHeadPosition()).magnitude) > segmentSize)
         {

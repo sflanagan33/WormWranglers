@@ -19,13 +19,15 @@ public class Worm {
     public Worm(Mesh m)
     {
         crossSection = m;
+        verticesPerSegment = m.vertices.Length;
+
         crossSection = OrganizeVertices(crossSection);
-        crossSection = CloseHole(crossSection);
+        crossSection = CloseHoleBack(crossSection);
+        //crossSection = CloseHoleFront(crossSection);
 
         vertices = crossSection.vertices;
         triangles = crossSection.triangles;
         normals = crossSection.normals;
-        verticesPerSegment = vertices.Length;
 
         headPosition = Vector3.zero;
         headOrientation = Vector3.zero;
@@ -35,9 +37,7 @@ public class Worm {
     {
         Mesh m = new Mesh();
         m.vertices = vertices;
-
         m.triangles = triangles;
-        m.normals = normals;
         m.RecalculateNormals();
 
         return m;
@@ -48,10 +48,8 @@ public class Worm {
         int vertCount = vertices.Length;
         int triCount = triangles.Length;
 
-        Vector3[] v = new Vector3[vertCount + verticesPerSegment];
+        Vector3[] v = new Vector3[vertCount + verticesPerSegment]; 
         int[] t = new int[triCount + (6 * verticesPerSegment)];
-        Vector3[] n = new Vector3[vertCount + verticesPerSegment];
-
 
         // Copy in existing data
         for (int i = 0; i < vertCount; i++)
@@ -69,8 +67,8 @@ public class Worm {
         for (int i = vertCount; i < vertCount + verticesPerSegment; i++)
         {
             v[i] = newCoords[i - vertCount];
-            float ratio = (i - vertCount) / (float)verticesPerSegment;
         }
+
         // attempt to link the triangles
 
         // first side
@@ -105,7 +103,6 @@ public class Worm {
         // assign all this back to Worm
         vertices = v;
         triangles = t;
-        normals = n;
 
     }
 
@@ -118,22 +115,34 @@ public class Worm {
         //Create properly sized arrays to hold new mesh data
         Vector3[] v = new Vector3[vertCount - (verticesPerSegment * amount)];
         int[] t = new int[triCount - (6 * verticesPerSegment * amount)];
-        Vector3[] n = new Vector3[vertCount - (verticesPerSegment * amount)];
 
         //Copy over all data except for [amount] at the back
         for (int i = 0; i < vertCount - (verticesPerSegment * amount); i++)
         {
             v[i] = vertices[i + verticesPerSegment * amount];
-            n[i] = normals[i + verticesPerSegment * amount];
+        }
+        // determine the new midpoint of back chunk
+        Vector3 center = Vector3.zero;
+        for (int i = 1; i < verticesPerSegment + 1; i++)
+        {
+            center += v[i];
+        }
+        center /= verticesPerSegment;
+        v[0] = center;
+        // keep the patched hole, delete a chunk, then copy the rest
+        for (int i = 0; i < 3 * verticesPerSegment; i++)
+        {
+            t[i] = triangles[i];
         }
         for (int i = 0; i < triCount - (6 * verticesPerSegment * amount); i++)
         {
             t[i] = triangles[i];
         }
-
+        
+        //Store patched values
         vertices = v;
         triangles = t;
-        normals = n;
+
     }
 
     public bool ExceedsSegmentCount(int x)
@@ -152,11 +161,11 @@ public class Worm {
 
         // iterate across all points in the cross section
         Vector3[] csV = crossSection.vertices;
-        for (int i = 0; i < csV.Length; i++)
+        for (int i = 0; i < verticesPerSegment; i++)
         {
             // rotate and offset to the correct position
             // Change first input to signedangle to match however the mesh is oriented
-            points[i] = headPosition + Quaternion.Euler(0, Vector3.SignedAngle(Vector3.right, headOrientation, Vector3.up), 0) * csV[i];
+            points[i] = headPosition + Quaternion.Euler(0, Vector3.SignedAngle(Vector3.right, headOrientation, Vector3.up), 0) * csV[i + 1];
         }
         return points;
 
@@ -196,22 +205,111 @@ public class Worm {
         return m;
     }
 
-    private Mesh CloseHole(Mesh m)
+    private Mesh CloseHoleBack(Mesh m)
     {
+        // add a midpoint to the front of vertices
+        Vector3[] v = new Vector3[m.vertexCount + 1];
+        Vector3 center = Vector3.zero;
+        for (int i = 0; i < m.vertexCount; i++)
+        {
+            v[i + 1] = m.vertices[i];
+            center += m.vertices[i];
+        }
+        center /= m.vertexCount;
+        v[0] = center;
+
+
         int[] t = new int[3 * verticesPerSegment];
-        for (int i = 1; i < verticesPerSegment - 1; i++)
+        for (int i = 0; i < verticesPerSegment - 1; i++)
         {
             t[3 * i] = 0;
-            t[3 * i + 1] = i;
-            t[3 * i + 2] = i + 1;
+            t[3 * i + 1] = i + 1;
+            t[3 * i + 2] = i + 2;
         }
-        m.triangles = t;
+        t[verticesPerSegment * 3 - 3] = 0;
+        t[verticesPerSegment * 3 - 2] = verticesPerSegment;
+        t[verticesPerSegment * 3 - 1] = 1;
+
+        // append t to whatever triangles alread exist
+        int[] full = new int[t.Length + m.triangles.Length];
+        for (int i = 0; i < t.Length; i++)
+        {
+            full[i] = t[i];
+        }
+        for (int i = t.Length; i < t.Length + m.triangles.Length; i++)
+        {
+            full[i] = m.triangles[i - t.Length];
+        }
+        m.vertices = v;
+        m.triangles = full;
+        return m;
+    }
+
+    public Mesh CloseHoleFront(Mesh m)
+    {
+        // add a midpoint to the front of vertices
+        Vector3[] v = new Vector3[m.vertexCount + 1];
+        Vector3 center = Vector3.zero;
+        for (int i = 0; i < m.vertexCount - verticesPerSegment; i++)
+        {
+            v[i] = m.vertices[i];
+        }
+        for (int i = m.vertexCount - verticesPerSegment; i < m.vertexCount; i++)
+        {
+            v[i] = m.vertices[i];
+            Debug.Log(v[i].ToString());
+            center += m.vertices[i];
+        }
+        center /= verticesPerSegment;
+        v[m.vertexCount] = center;
+
+
+        int[] t = new int[3 * verticesPerSegment];
+        for (int i = 0; i < verticesPerSegment - 1; i++)
+        {
+            t[3 * i] = m.vertexCount;
+            t[3 * i + 1] = m.vertexCount - verticesPerSegment + i;
+            t[3 * i + 2] = m.vertexCount - verticesPerSegment + i + 1;
+        }
+        t[verticesPerSegment * 3 - 3] = m.vertexCount;
+        t[verticesPerSegment * 3 - 2] = m.vertexCount - 1;
+        t[verticesPerSegment * 3 - 1] = m.vertexCount - verticesPerSegment;
+
+        // append t to whatever triangles alread exist
+        int[] full = new int[t.Length + m.triangles.Length];
+        for (int i = m.triangles.Length; i < t.Length + m.triangles.Length; i++)
+        {
+            full[i] = t[i - m.triangles.Length];
+        }
+        for (int i = 0; i < m.triangles.Length; i++)
+        {
+            full[i] = m.triangles[i];
+        }
+        m.vertices = v;
+        m.triangles = full;
         return m;
     }
 
     public Vector3 GetHeadPosition()
     {
         return headPosition;
+    }
+
+    public void DebugMesh(Mesh m)
+    {
+        string x = "";
+        for (int i = 0; i < m.vertices.Length; i++)
+        {
+            x += string.Format("{0}: {1} \n", i, m.vertices[i]);
+        }
+        Debug.Log(x);
+        x = "";
+        Debug.Log(m.triangles.Length);
+        for (int i = 0; i < m.triangles.Length; i+=3)
+        {
+            x += string.Format("{0} {1} {2} \n", m.triangles[i], m.triangles[i + 1], m.triangles[i + 2]);
+        }
+        Debug.Log(x);
     }
 
 }
