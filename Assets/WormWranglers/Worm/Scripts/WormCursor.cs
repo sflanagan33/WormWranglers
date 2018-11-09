@@ -9,6 +9,9 @@ public class WormCursor : MonoBehaviour {
     public float segmentWidth;
     private float maxAngle;
 
+    //The current stored angle of rotation
+    private float currentAngle;
+
     private void Awake()
     {
         //Figure out the max safe angle of rotation (lots of math)
