@@ -23,7 +23,7 @@ public class Worm {
 
         crossSection = OrganizeVertices(crossSection);
         crossSection = CloseHoleBack(crossSection);
-        //crossSection = CloseHoleFront(crossSection);
+        crossSection = CloseHoleFront(crossSection);
 
         vertices = crossSection.vertices;
         triangles = crossSection.triangles;
@@ -38,15 +38,16 @@ public class Worm {
         Mesh m = new Mesh();
         m.vertices = vertices;
         m.triangles = triangles;
-        m.RecalculateNormals();
+        m.normals = CalculateNormals();
 
         return m;
     }
 
     public void AddToFront(Vector3 following)
     {
-        int vertCount = vertices.Length;
-        int triCount = triangles.Length;
+        // ignore the patched hole
+        int vertCount = vertices.Length - 1;
+        int triCount = triangles.Length - 3 * verticesPerSegment;
 
         Vector3[] v = new Vector3[vertCount + verticesPerSegment]; 
         int[] t = new int[triCount + (6 * verticesPerSegment)];
@@ -98,12 +99,17 @@ public class Worm {
         t[lastIdx + 3] = vertCount; // first new point
         t[lastIdx + 5] = vertCount - verticesPerSegment; //last old point
 
-        // assign normals
-
+        // Create a temporary mesh so that CloseHoleFront can be called
+        Mesh m = new Mesh();
+        m.vertices = v;
+        m.triangles = t;
+        m = CloseHoleFront(m);
+        v = m.vertices;
+        t = m.triangles;
         // assign all this back to Worm
         vertices = v;
         triangles = t;
-
+        
     }
 
     public void RemoveFromBack(int amount)
@@ -115,6 +121,8 @@ public class Worm {
         //Create properly sized arrays to hold new mesh data
         Vector3[] v = new Vector3[vertCount - (verticesPerSegment * amount)];
         int[] t = new int[triCount - (6 * verticesPerSegment * amount)];
+
+        Debug.Log(v.Length + " " + t.Length);
 
         //Copy over all data except for [amount] at the back
         for (int i = 0; i < vertCount - (verticesPerSegment * amount); i++)
@@ -134,14 +142,16 @@ public class Worm {
         {
             t[i] = triangles[i];
         }
-        for (int i = 0; i < triCount - (6 * verticesPerSegment * amount); i++)
+        int off = triangles[3 * verticesPerSegment + (6 * verticesPerSegment * amount)];
+        for (int i = 3 * verticesPerSegment + (6 * verticesPerSegment * amount); i < triCount; i++)
         {
-            t[i] = triangles[i];
+            t[i - (6 * verticesPerSegment * amount)] = triangles[i] - off + 1;
         }
         
         //Store patched values
         vertices = v;
         triangles = t;
+
 
     }
 
@@ -168,7 +178,29 @@ public class Worm {
             points[i] = headPosition + Quaternion.Euler(0, Vector3.SignedAngle(Vector3.right, headOrientation, Vector3.up), 0) * csV[i + 1];
         }
         return points;
+    }
 
+    private Vector3[] CalculateNormals()
+    {
+        Vector3 center = Vector3.zero;
+        foreach (Vector3 v in vertices)
+        {
+            center += v;
+        }
+        center /= vertices.Length;
+        Vector3[] n = new Vector3[vertices.Length];
+        string x = "";
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            n[i] = (vertices[i] - center).normalized;
+            x += string.Format("{0}: {1}", i, n[i]);
+
+        }
+        for (int i = 1; i < verticesPerSegment + 1; i++)
+        {
+            n[i] = n[0];
+        }
+        return n;
     }
 
     private Mesh OrganizeVertices(Mesh m)
@@ -223,12 +255,12 @@ public class Worm {
         for (int i = 0; i < verticesPerSegment - 1; i++)
         {
             t[3 * i] = 0;
-            t[3 * i + 1] = i + 1;
-            t[3 * i + 2] = i + 2;
+            t[3 * i + 2] = i + 1;
+            t[3 * i + 1] = i + 2;
         }
         t[verticesPerSegment * 3 - 3] = 0;
-        t[verticesPerSegment * 3 - 2] = verticesPerSegment;
-        t[verticesPerSegment * 3 - 1] = 1;
+        t[verticesPerSegment * 3 - 1] = verticesPerSegment;
+        t[verticesPerSegment * 3 - 2] = 1;
 
         // append t to whatever triangles alread exist
         int[] full = new int[t.Length + m.triangles.Length];
@@ -257,7 +289,6 @@ public class Worm {
         for (int i = m.vertexCount - verticesPerSegment; i < m.vertexCount; i++)
         {
             v[i] = m.vertices[i];
-            Debug.Log(v[i].ToString());
             center += m.vertices[i];
         }
         center /= verticesPerSegment;
@@ -297,6 +328,7 @@ public class Worm {
 
     public void DebugMesh(Mesh m)
     {
+        Debug.Log(string.Format("Vertices: {0} Triangles: {1}", m.vertices.Length, m.triangles.Length));
         string x = "";
         for (int i = 0; i < m.vertices.Length; i++)
         {
@@ -304,10 +336,26 @@ public class Worm {
         }
         Debug.Log(x);
         x = "";
-        Debug.Log(m.triangles.Length);
         for (int i = 0; i < m.triangles.Length; i+=3)
         {
             x += string.Format("{0} {1} {2} \n", m.triangles[i], m.triangles[i + 1], m.triangles[i + 2]);
+        }
+        Debug.Log(x);
+    }
+
+    public void DebugMesh(Vector3[] vertices, int[] triangles)
+    {
+        Debug.Log(string.Format("Vertices: {0} Triangles: {1}", vertices.Length, triangles.Length));
+        string x = "";
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            x += string.Format("{0}: {1} \n", i, vertices[i]);
+        }
+        Debug.Log(x);
+        x = "";
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            x += string.Format("{0} {1} {2} \n", triangles[i], triangles[i + 1], triangles[i + 2]);
         }
         Debug.Log(x);
     }
