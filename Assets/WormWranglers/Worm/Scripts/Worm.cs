@@ -7,6 +7,7 @@ public class Worm
     // mesh stuff
 	private Vector3[] vertices;
     private int[] triangles;
+    private Vector3[] normals;
     private int verticesPerSegment;
 
     // stores the shape the worm will take
@@ -21,6 +22,35 @@ public class Worm
         triangles = crossSection.triangles;
     }
 
+    public Worm(Mesh m, int segments, float spacing)
+    {
+        crossSection = OrganizeVertices(m);
+        verticesPerSegment = m.vertices.Length;
+
+        vertices = crossSection.vertices;
+        triangles = crossSection.triangles;
+
+        CreateEntireMesh(segments, spacing);
+    }
+
+    public void Update(Transform cursor)
+    {
+        // reassign vertex locations from back to front
+        for (int i = 0; i < (vertices.Length / verticesPerSegment) - 1; i++)
+        {
+            for (int j = 0; j < verticesPerSegment; j++)
+            {
+                vertices[i * verticesPerSegment + j] = vertices[(i + 1) * verticesPerSegment + j];
+            }
+        }
+        // calculate the new front positions
+        Vector3[] csV = crossSection.vertices;
+        for (int i = vertices.Length - verticesPerSegment; i < vertices.Length; i++)
+        {
+            vertices[i] = cursor.TransformPoint(csV[i - vertices.Length + verticesPerSegment]);
+        }
+    }
+
     public Mesh ToMesh()
     {
         Mesh m = new Mesh();
@@ -29,6 +59,38 @@ public class Worm
         m.RecalculateNormals();
 
         return m;
+    }
+
+    public void CreateEntireMesh(int segments, float spacing)
+    {
+        GameObject obj = new GameObject();
+        Transform t = obj.transform;
+        obj.transform.position = Vector3.zero;
+        for (int i = 0; i < segments; i++)
+        {
+            // t.position += Vector3.back * spacing;
+            t = SnapToGround(t);
+            AddToFront(t);
+        }
+        // just to be safe
+        GameObject.Destroy(obj);
+        Transform.Destroy(t);
+    }
+
+    public Vector3[] AssignNormals()
+    {
+        // determine center point
+        Vector3 center = Vector3.zero;
+        foreach (Vector3 v in vertices)
+            center += v;
+        center /= vertices.Length;
+        // assign each normal as a direction from center
+        Vector3[] n = new Vector3[vertices.Length];
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            n[i] = (vertices[i] - center).normalized;
+        }
+        return n;
     }
 
     public void AddToFront(Transform cursor)
@@ -161,5 +223,20 @@ public class Worm
         }
         m.vertices = news;
         return m;
+    }
+
+    private Transform SnapToGround(Transform t)
+    {
+        Ray ray = new Ray(t.position + Vector3.up * 100f, Vector3.down);
+        RaycastHit hitInfo;
+        float maxDistance = 200f;
+        int layerMask = LayerMask.GetMask("Terrain");
+        Physics.Raycast(ray, out hitInfo, maxDistance, layerMask);
+
+        Vector3 p = t.position;
+        p.y = hitInfo.point.y;
+        t.position = p;
+
+        return t;
     }
 }
