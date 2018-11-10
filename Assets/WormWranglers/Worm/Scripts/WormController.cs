@@ -24,7 +24,7 @@ public class WormController : MonoBehaviour
         mC = GetComponent<MeshCollider>();
         mC.inflateMesh = true;
         mC.skinWidth = .1f;
-        worm = new Worm(mF.mesh);
+        worm = new Worm(mF.mesh, maxSegments, segmentSize);
     }
 
     private void Update()
@@ -32,15 +32,15 @@ public class WormController : MonoBehaviour
         if ((cursor.position - cursorStoredPos).magnitude > segmentSize)
         {
             cursorStoredPos = cursor.position;
-            worm.AddToFront(cursor);
+            worm.Update(cursor);
             UpdateMesh();
         }
 
-        if (worm.ExceedsSegmentCount(maxSegments))
-        {
-            worm.RemoveFromBack(backRemovalSegments);
-            UpdateMesh();
-        }
+        //if (worm.ExceedsSegmentCount(maxSegments))
+        //{
+        //    worm.RemoveFromBack(backRemovalSegments);
+        //    UpdateMesh();
+        //}
     }
 
     private void UpdateMesh()
