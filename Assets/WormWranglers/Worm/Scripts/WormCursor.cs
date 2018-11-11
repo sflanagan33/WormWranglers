@@ -2,44 +2,70 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WormCursor : MonoBehaviour
+namespace WormWranglers.Worm
 {
-    public float speed;
-    public float rotation;
-
-    private void Awake()
+    public class WormCursor : MonoBehaviour
     {
-        SnapToGround();
-    }
+        [SerializeField] private float speed;
+        [SerializeField] private float rotation;
 
-    private void Update()
-    {
-        // Rotate with player input
+        [HideInInspector] public List<WormCursorPoint> points;
+        [HideInInspector] public float distanceTraveled;
 
-        float h = Input.GetAxis("Horizontal");
-        h = Mathf.PerlinNoise(Time.time * 0.5f, 0) * 2f - 1f; // brilliant AI
+        private void Awake()
+        {
+            // Get all the points and add them to a public list
 
-        transform.Rotate(Vector3.up, rotation * Time.deltaTime * h);
+            points = new List<WormCursorPoint>();
+            foreach (Transform p in transform)
+                points.Add(p.GetComponent<WormCursorPoint>());
+        }
 
-        // Move in the forward direction
+        private void Update()
+        {
+            // Rotate with player input
 
-        transform.position += transform.forward * speed * Time.deltaTime;
+            float h = Input.GetAxis("Horizontal");
+            h = Mathf.PerlinNoise(Time.time * 0.5f, 0) * 2f - 1f; // brilliant AI
 
-        // Place on top of terrain
+            transform.Rotate(Vector3.up, rotation * Time.deltaTime * h);
 
-        SnapToGround();
-    }
+            // Move in the forward direction, keeping track of the (lateral) distance traveled
 
-    private void SnapToGround()
-    {
-        Ray ray = new Ray(transform.position + Vector3.up * 100f, Vector3.down);
-        RaycastHit hitInfo;
-        float maxDistance = 200f;
-        int layerMask = LayerMask.GetMask("Terrain");
-        Physics.Raycast(ray, out hitInfo, maxDistance, layerMask);
+            float distance = speed * Time.deltaTime;
+            transform.position += transform.forward * distance;
+            distanceTraveled += distance;
 
-        Vector3 p = transform.position;
-        p.y = hitInfo.point.y;
-        transform.position = p;
+            // Place on top of terrain again
+
+            SnapToGround();
+        }
+
+        public void SnapToGround()
+        {
+            Ray ray = new Ray(transform.position + Vector3.up * 100f, Vector3.down);
+            RaycastHit hitInfo;
+            float maxDistance = 200f;
+            int layerMask = LayerMask.GetMask("Terrain");
+            Physics.Raycast(ray, out hitInfo, maxDistance, layerMask);
+
+            Vector3 p = transform.position;
+            p.y = hitInfo.point.y;
+            transform.position = p;
+        }
+
+        // ====================================================================================================================
+        // Displays the connections between this cursor's points in the editor.
+
+        private void OnDrawGizmos()
+        {
+            for (int i = 0; i < transform.childCount - 1; i++)
+            {
+                Vector3 a = transform.GetChild(i).position;
+                Vector3 b = transform.GetChild(i + 1).position;
+                Gizmos.color = Color.Lerp(Color.magenta, Color.cyan, (float) i / transform.childCount);
+                Gizmos.DrawLine(a, b);
+            }
+        }
     }
 }
