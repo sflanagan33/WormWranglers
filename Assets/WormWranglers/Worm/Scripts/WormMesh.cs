@@ -42,10 +42,12 @@ namespace WormWranglers.Worm
 
         public void AddSegment(WormCursor cursor)
         {
+            float vCoord = cursor.distanceTraveled / textureLength;
+
             foreach (var point in cursor.points)
             {
                 vertices.Add(point.transform.position);
-                uvs.Add(new Vector2(point.uCoord, cursor.distanceTraveled / textureLength));
+                uvs.Add(new Vector2(point.uCoord, vCoord));
             }
         }
 
