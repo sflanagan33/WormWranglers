@@ -1,28 +1,14 @@
 fileFormatVersion: 2
-guid: 3153452a99536e54abeef06e529b25c4
+guid: d5e82dec038548b4895b789ae4c765bd
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Fence
-    100004: Terrain
-    100006: FenceCollision
     400000: //RootNode
-    400002: Fence
-    400004: Terrain
-    400006: FenceCollision
     2100000: unnamed
     2300000: //RootNode
-    2300002: Fence
-    2300004: Terrain
-    2300006: FenceCollision
     3300000: //RootNode
-    3300002: Fence
-    3300004: Terrain
-    3300006: FenceCollision
-    4300000: Terrain
-    4300002: Fence
-    4300004: FenceCollision
+    4300000: Flowers
     7400000: Default Take
     9500000: //RootNode
   externalObjects: {}

@@ -8,7 +8,6 @@ namespace WormWranglers.Worm
     {
         public WormCursor cursor;
         public WormMesh mesh;
-        public GameObject head;
 
         [SerializeField] private int segmentCount = 100;
         [SerializeField] private float segmentSize = 1f;
@@ -42,17 +41,9 @@ namespace WormWranglers.Worm
             {
                 cursorStoredPos = cursor.transform.position;
 
-                UpdateHead(cursorStoredPos, cursor.transform.rotation);
-
                 mesh.ShiftSegment(cursor);
                 mesh.BakeMesh(cursor, false);
             }
-        }
-
-        private void UpdateHead(Vector3 pos, Quaternion rot)
-        {
-            head.transform.position = transform.TransformPoint(pos);
-            head.transform.rotation = rot;
         }
     }
 }

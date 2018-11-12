@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using WormWranglers.Util;
+
 namespace WormWranglers.Beetle
 {
 	public class Beetle : MonoBehaviour
@@ -16,14 +18,27 @@ namespace WormWranglers.Beetle
 		public float thrustForce;
 		public float thrustForwardDrag;
 		public float thrustLateralDrag;
+		
+        private LerpFloat steer = new LerpFloat(0f, 0f, 0.5f, 2, -1f, 1f);
+
+		private void Awake()
+		{
+			AnimatedFloatManager.Add(this, steer, true);
+		}
 
 		private void FixedUpdate()
 		{
-			// Get player input
+			// Get player input (TODO: this is bad input management)
 
-			float h = Input.GetAxisRaw("Horizontal");
-			float v = (Input.GetAxisRaw("Gas") + 1) / 2f;
-			v -= (Input.GetAxisRaw("Reverse") + 1) / 2f;
+			//float h = Input.GetAxisRaw("Horizontal");
+			//float v = (Input.GetAxisRaw("Gas") + 1) / 2f;
+			//v -= (Input.GetAxisRaw("Reverse") + 1) / 2f;
+
+            steer.target = (Input.GetKey(KeyCode.D) ? 1 : 0)
+						 - (Input.GetKey(KeyCode.A) ? 1 : 0);
+			float h = steer;
+			float v = (Input.GetKey(KeyCode.Space) ? 1 : 0)
+					- (Input.GetKey(KeyCode.LeftShift) ? 1 : 0);
 
 			// ====================================================================================
 
@@ -58,6 +73,14 @@ namespace WormWranglers.Beetle
 			body.velocity = (vF * thrustForwardDrag) + (vL * thrustLateralDrag) + vV;
 			
 			// ====================================================================================
+		}
+
+		// TODO: crap code, rewrite
+
+		private void OnCollisionEnter(Collision collision)
+		{
+			if (collision.gameObject.CompareTag("Terrain"))
+				FindObjectOfType<Game>().End(Player.Worm);
 		}
 	}
 }

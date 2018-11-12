@@ -23,10 +23,12 @@ namespace WormWranglers.Beetle
 
 		private void Update()
 		{
+			float dt = Time.deltaTime * 60f;
+
 			// Position
 
 			Vector3 goalPos = follow.transform.position;
-			transform.position = Vector3.Lerp(transform.position, goalPos, 0.3f);
+			transform.position = Vector3.Lerp(transform.position, goalPos, 0.3f * dt);
 
 			// Rotation
 			
@@ -34,7 +36,7 @@ namespace WormWranglers.Beetle
 			Quaternion goalRot = Quaternion.LookRotation(goalForward, Vector3.up);
 			goalRot = Quaternion.Slerp(goalRot, follow.transform.rotation, 0.25f);
 
-			transform.rotation = Quaternion.Slerp(transform.rotation, goalRot, 0.15f);
+			transform.rotation = Quaternion.Slerp(transform.rotation, goalRot, 0.15f * dt);
 
 			// Camera FOV
 

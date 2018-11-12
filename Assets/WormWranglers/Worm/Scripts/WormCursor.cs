@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using WormWranglers.Util;
+
 namespace WormWranglers.Worm
 {
     public class WormCursor : MonoBehaviour
@@ -12,6 +14,8 @@ namespace WormWranglers.Worm
         [HideInInspector] public List<WormCursorPoint> points;
         [HideInInspector] public float distanceTraveled;
 
+        private LerpFloat steer = new LerpFloat(0f, 0f, 0.1f, 2, -1f, 1f);
+
         private void Awake()
         {
             // Get all the points and add them to a public list
@@ -19,16 +23,20 @@ namespace WormWranglers.Worm
             points = new List<WormCursorPoint>();
             foreach (Transform p in transform)
                 points.Add(p.GetComponent<WormCursorPoint>());
+
+            AnimatedFloatManager.Add(this, steer, true);
         }
 
         private void Update()
         {
-            // Rotate with player input
+            // Rotate with player input (TODO: this is bad input management)
 
-            float h = Input.GetAxis("Horizontal");
-            h = Mathf.PerlinNoise(Time.time * 0.5f, 0) * 2f - 1f; // brilliant AI
+            steer.target = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0)
+                         - (Input.GetKey(KeyCode.LeftArrow) ? 1 : 0);
 
-            transform.Rotate(Vector3.up, rotation * Time.deltaTime * h);
+            // Mathf.PerlinNoise(Time.time * 0.5f, 0) * 2f - 1f; // brilliant AI
+
+            transform.Rotate(Vector3.up, rotation * Time.deltaTime * steer);
 
             // Move in the forward direction, keeping track of the (lateral) distance traveled
 
