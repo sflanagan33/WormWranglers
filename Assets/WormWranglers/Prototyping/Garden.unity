@@ -321,6 +321,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114307550664209600, guid: 1607e9035476980459ae828fe1a03faa,
+        type: 2}
+      propertyPath: thrustForce
+      value: 120
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1607e9035476980459ae828fe1a03faa, type: 2}
   m_IsPrefabAsset: 0
