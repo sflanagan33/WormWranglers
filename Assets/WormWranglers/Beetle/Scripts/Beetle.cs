@@ -18,6 +18,11 @@ namespace WormWranglers.Beetle
 		public float thrustForce;
 		public float thrustForwardDrag;
 		public float thrustLateralDrag;
+
+        private KeyCode left;
+        private KeyCode right;
+        private KeyCode accel;
+        private KeyCode decel;
 		
         private LerpFloat steer = new LerpFloat(0f, 0f, 0.5f, 2, -1f, 1f);
 
@@ -34,11 +39,11 @@ namespace WormWranglers.Beetle
 			//float v = (Input.GetAxisRaw("Gas") + 1) / 2f;
 			//v -= (Input.GetAxisRaw("Reverse") + 1) / 2f;
 
-            steer.target = (Input.GetKey(KeyCode.D) ? 1 : 0)
-						 - (Input.GetKey(KeyCode.A) ? 1 : 0);
+            steer.target = (Input.GetKey(left) ? 1 : 0)
+						 - (Input.GetKey(right) ? 1 : 0);
 			float h = steer;
-			float v = (Input.GetKey(KeyCode.Space) ? 1 : 0)
-					- (Input.GetKey(KeyCode.LeftShift) ? 1 : 0);
+			float v = (Input.GetKey(accel) ? 1 : 0)
+					- (Input.GetKey(decel) ? 1 : 0);
 
 			// ====================================================================================
 
@@ -82,5 +87,13 @@ namespace WormWranglers.Beetle
 			if (collision.gameObject.CompareTag("Terrain"))
 				FindObjectOfType<Game>().End(Player.Worm);
 		}
+
+        public void AssignControls(KeyCode l, KeyCode r, KeyCode a, KeyCode d)
+        {
+            left = l;
+            right = r;
+            accel = a;
+            decel = d;
+        }
 	}
 }
