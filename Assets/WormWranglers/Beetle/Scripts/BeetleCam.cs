@@ -43,5 +43,10 @@ namespace WormWranglers.Beetle
 			FOV.target = FOVBase + (follow.velocity.magnitude * FOVExpand);
 			cam.fieldOfView = FOV;
 		}
+
+        public void SetFollow(Rigidbody rb)
+        {
+            follow = rb;
+        }
 	}
 }

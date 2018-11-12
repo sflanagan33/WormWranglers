@@ -82,7 +82,7 @@ namespace WormWranglers.Beetle
 
 		// TODO: crap code, rewrite
 
-		private void OnCollisionEnter(Collision collision)
+		private void OnCollisionEnter_(Collision collision)
 		{
 			if (collision.gameObject.CompareTag("Terrain"))
 				FindObjectOfType<Game>().End(Player.Worm);
