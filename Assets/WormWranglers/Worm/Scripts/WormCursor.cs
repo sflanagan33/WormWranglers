@@ -34,7 +34,6 @@ namespace WormWranglers.Worm
             steer.target = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0)
                          - (Input.GetKey(KeyCode.LeftArrow) ? 1 : 0);
 
-            // Mathf.PerlinNoise(Time.time * 0.5f, 0) * 2f - 1f; // brilliant AI
 
             transform.Rotate(Vector3.up, rotation * Time.deltaTime * steer);
 

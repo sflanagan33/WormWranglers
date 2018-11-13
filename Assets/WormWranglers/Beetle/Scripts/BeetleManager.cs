@@ -74,6 +74,8 @@ namespace WormWranglers.Beetle
                 thisBeetle.transform.Find("Visuals").GetChild(4).GetComponent<Renderer>().material.color = col;
                 thisBeetle.transform.position = pos;
                 thisBeetle.GetComponentInChildren<Beetle>().AssignControls(leftSteer[i], rightSteer[i], accelerate[i], decelerate[i]);
+                thisBeetle.GetComponentInChildren<BeetleVisuals>().AssignControls(leftSteer[i], rightSteer[i]);
+
 
                 // Camera work
                 thisCamera.transform.position += thisBeetle.transform.position;

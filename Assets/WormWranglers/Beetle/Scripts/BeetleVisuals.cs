@@ -19,7 +19,11 @@ namespace WormWranglers.Beetle
 
 		private Vector3 velocityPrev;
 
-		private void Start()
+        private KeyCode left;
+        private KeyCode right;
+
+
+        private void Start()
 		{
 			AnimatedFloatManager.Add(this, turn, true);
 			AnimatedFloatManager.Add(this, scale, true);
@@ -29,8 +33,9 @@ namespace WormWranglers.Beetle
 		{
 			// Wheel turning
 
-			turn.target = Input.GetAxisRaw("Horizontal");
-			Quaternion turnRot = Quaternion.Euler(0, 90 + turn * 15, 0);
+			turn.target = (Input.GetKey(left) ? 1 : 0)
+                        - (Input.GetKey(right) ? 1 : 0);
+            Quaternion turnRot = Quaternion.Euler(0, 90 + turn * 15, 0);
 			wheelFrontLeft.localRotation = wheelFrontRight.localRotation = turnRot;
 
 			// Velocity jiggle
@@ -44,5 +49,11 @@ namespace WormWranglers.Beetle
 
 			transform.localScale = new Vector3(1 - scale, 1 + scale, 1 - scale);
 		}
-	}
+
+        public void AssignControls(KeyCode l, KeyCode r)
+        {
+            left = l;
+            right = r;
+        }
+    }
 }
