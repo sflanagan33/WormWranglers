@@ -580,7 +580,9 @@ MonoBehaviour:
   instruct1: {fileID: 1897963567}
   instruct2: {fileID: 1513176715}
   instruct3: {fileID: 143471429}
-  beetleCount: 3
+  player2Gamepad: 1
+  player3Gamepad: 0
+  beetleCount: 2
   leftSteer: 640000006a0000003b000000
   rightSteer: 61000000670000006b000000
   accelerate: 77000000790000006f000000

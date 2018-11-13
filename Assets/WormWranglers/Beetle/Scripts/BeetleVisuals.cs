@@ -19,6 +19,9 @@ namespace WormWranglers.Beetle
 
 		private Vector3 velocityPrev;
 
+        // input handlers
+        private bool gamepad;
+        private string horz;
         private KeyCode left;
         private KeyCode right;
 
@@ -31,10 +34,16 @@ namespace WormWranglers.Beetle
 
 		private void Update()
 		{
-			// Wheel turning
+            // Wheel turning
 
-			turn.target = (Input.GetKey(left) ? 1 : 0)
-                        - (Input.GetKey(right) ? 1 : 0);
+            if (!gamepad)
+            {
+                turn.target = (Input.GetKey(left) ? 1 : 0) - (Input.GetKey(right) ? 1 : 0);
+            }
+            else
+            {
+                turn.target = Input.GetAxis(horz);
+            }
             Quaternion turnRot = Quaternion.Euler(0, 90 + turn * 15, 0);
 			wheelFrontLeft.localRotation = wheelFrontRight.localRotation = turnRot;
 
@@ -50,8 +59,17 @@ namespace WormWranglers.Beetle
 			transform.localScale = new Vector3(1 - scale, 1 + scale, 1 - scale);
 		}
 
+        public void AssignControls(string x)
+        {
+            gamepad = true;
+
+            horz = x;
+        }
+
         public void AssignControls(KeyCode l, KeyCode r)
         {
+            gamepad = false;
+
             left = l;
             right = r;
         }

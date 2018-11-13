@@ -19,6 +19,10 @@ namespace WormWranglers.Beetle
 		public float thrustForwardDrag;
 		public float thrustLateralDrag;
 
+        // input handlers
+        private bool gamepad;
+        private string horz;
+        private string vert;
         private KeyCode left;
         private KeyCode right;
         private KeyCode accel;
@@ -33,17 +37,21 @@ namespace WormWranglers.Beetle
 
 		private void FixedUpdate()
 		{
-			// Get player input (TODO: this is bad input management)
+            // Get player input (TODO: this is bad input management)
 
-			//float h = Input.GetAxisRaw("Horizontal");
-			//float v = (Input.GetAxisRaw("Gas") + 1) / 2f;
-			//v -= (Input.GetAxisRaw("Reverse") + 1) / 2f;
-
-            steer.target = (Input.GetKey(left) ? 1 : 0)
-						 - (Input.GetKey(right) ? 1 : 0);
-			float h = steer;
-			float v = (Input.GetKey(accel) ? 1 : 0)
-					- (Input.GetKey(decel) ? 1 : 0);
+            float h = 0, v = 0;
+            if (!gamepad)
+            {
+                steer.target = (Input.GetKey(left) ? 1 : 0) - (Input.GetKey(right) ? 1 : 0);
+                h = steer;
+                v = (Input.GetKey(accel) ? 1 : 0) - (Input.GetKey(decel) ? 1 : 0);
+            }
+            else
+            {
+                steer.target = Input.GetAxis(horz);
+                h = steer;
+                v = Input.GetAxis(vert);
+            }
 
 			// ====================================================================================
 
@@ -88,8 +96,18 @@ namespace WormWranglers.Beetle
 				FindObjectOfType<Game>().End(Player.Worm);
 		}
 
+        public void AssignControls(string x, string y)
+        {
+            gamepad = true;
+
+            horz = x;
+            vert = y;
+        }
+
         public void AssignControls(KeyCode l, KeyCode r, KeyCode a, KeyCode d)
         {
+            gamepad = false;
+
             left = l;
             right = r;
             accel = a;

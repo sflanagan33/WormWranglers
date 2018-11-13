@@ -12,6 +12,7 @@ namespace WormWranglers.Beetle
         // later this can be a list, so beetles can be unique
         public GameObject beetlePrefab;
         public GameObject cameraPrefab;
+
         // Need the worm's camera to set its aspect ratio
         public Camera wormCam;
 
@@ -20,8 +21,13 @@ namespace WormWranglers.Beetle
         public GameObject instruct2;
         public GameObject instruct3;
 
+        // toggle for p2 and p3 to be controller enabled
+        public bool player2Gamepad;
+        public bool player3Gamepad;
+
         // select number of beetles
         public int beetleCount;
+
         // I got left and right backwards
         public List<KeyCode> leftSteer;
         public List<KeyCode> rightSteer;
@@ -73,15 +79,31 @@ namespace WormWranglers.Beetle
                 thisBeetle.transform.Find("Visuals").GetChild(3).GetComponent<Renderer>().material.color = col;
                 thisBeetle.transform.Find("Visuals").GetChild(4).GetComponent<Renderer>().material.color = col;
                 thisBeetle.transform.position = pos;
+
+                // assign inputs
                 thisBeetle.GetComponentInChildren<Beetle>().AssignControls(leftSteer[i], rightSteer[i], accelerate[i], decelerate[i]);
                 thisBeetle.GetComponentInChildren<BeetleVisuals>().AssignControls(leftSteer[i], rightSteer[i]);
 
+                if (player2Gamepad && i == 1)
+                {
+                    thisBeetle.GetComponentInChildren<Beetle>().AssignControls("Gamepad1Horizontal", "Gamepad1Vertical");
+                    thisBeetle.GetComponentInChildren<BeetleVisuals>().AssignControls("Gamepad1Horizontal");
+                }
+                if (player3Gamepad && i == 2)
+                {
+                    thisBeetle.GetComponentInChildren<Beetle>().AssignControls("Gamepad2Horizontal", "Gamepad2Vertical");
+                    thisBeetle.GetComponentInChildren<BeetleVisuals>().AssignControls("Gamepad2Horizontal");
+                }
+
 
                 // Camera work
+
                 thisCamera.transform.position += thisBeetle.transform.position;
                 thisCamera.GetComponent<BeetleCam>().SetFollow(thisBeetle.GetComponent<Rigidbody>());
                 Camera cam = thisCamera.transform.Find("Camera").GetComponent<Camera>();
-                // Hard coded aspects
+
+                // Hard coded aspect ratio
+
                 if (beetleCount == 1)
                 {
                     cam.rect = new Rect(0, 0, 0.5f, 1);
@@ -116,7 +138,8 @@ namespace WormWranglers.Beetle
                     wormCam.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
                 }
 
-                // Control display
+                // Generate a UI
+
                 if (i == 0)
                 {
                     instruct1.SetActive(true);
@@ -143,7 +166,7 @@ namespace WormWranglers.Beetle
                 }
 
 
-                // parent them for easy access
+                // parent the game objects for easy access
                 thisBeetle.transform.parent = transform;
                 thisCamera.transform.parent = transform;
 
