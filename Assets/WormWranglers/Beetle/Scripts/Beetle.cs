@@ -27,11 +27,16 @@ namespace WormWranglers.Beetle
         private KeyCode right;
         private KeyCode accel;
         private KeyCode decel;
+
+        // for communicating with BeetleManager to determine place
+        private int index;
+        private bool loser;
 		
         private LerpFloat steer = new LerpFloat(0f, 0f, 0.5f, 2, -1f, 1f);
 
 		private void Awake()
 		{
+            loser = false;
 			AnimatedFloatManager.Add(this, steer, true);
         }
 
@@ -90,11 +95,19 @@ namespace WormWranglers.Beetle
 
 		// TODO: crap code, rewrite
 
-		private void OnCollisionEnter_(Collision collision)
+		private void OnCollisionEnter(Collision collision)
 		{
-			if (collision.gameObject.CompareTag("Terrain"))
-				FindObjectOfType<Game>().End(Player.Worm);
+            if (collision.gameObject.CompareTag("Terrain") && !loser)
+            {
+                loser = true;
+                FindObjectOfType<BeetleManager>().Loser(index);
+            }
 		}
+
+        public void AssignIndex(int x)
+        {
+            index = x;
+        }
 
         public void AssignControls(string x, string y)
         {

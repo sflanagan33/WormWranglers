@@ -36,18 +36,30 @@ namespace WormWranglers
 
 			text.text = "";
 		}
+
+        public void End(Player winner)
+        {
+            End(winner, -1);
+        }
 		
-		public void End(Player winner)
+		public void End(Player winner, int idx)
 		{
 			if (state == State.Play)
-				StartCoroutine(EndRoutine(winner));
+				StartCoroutine(EndRoutine(winner, idx));
 		}
 
-		private IEnumerator EndRoutine(Player winner)
+		private IEnumerator EndRoutine(Player winner, int idx)
 		{
 			state = State.End;
 			Time.timeScale = 0f;
-			text.text = winner == Player.Beetle ? "Beetle wins!" : "Worm wins!";
+            if (winner == Player.Worm)
+            {
+                text.text = "Worm wins!";
+            }
+            else
+            {
+                text.text = string.Format("Beetle {0} wins!", idx + 1);
+            }
 			yield return new WaitForSecondsRealtime(3f);
 
 			SceneManager.LoadScene(0);

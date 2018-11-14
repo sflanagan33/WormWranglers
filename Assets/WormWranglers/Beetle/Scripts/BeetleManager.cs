@@ -20,6 +20,10 @@ namespace WormWranglers.Beetle
         public GameObject instruct1;
         public GameObject instruct2;
         public GameObject instruct3;
+        // Dirty Places
+        public Text place1;
+        public Text place2;
+        public Text place3;
 
         // toggle for p2 and p3 to be controller enabled
         public bool player2Gamepad;
@@ -34,8 +38,18 @@ namespace WormWranglers.Beetle
         public List<KeyCode> accelerate;
         public List<KeyCode> decelerate;
 
+        // Used to determine beetles' lose states
+        public float[] loseTimes;
+
         private void Awake()
         {
+            // -1 means a beetle has not lost
+            loseTimes = new float[beetleCount];
+            for (int i = 0; i < beetleCount; i++)
+            {
+                loseTimes[i] = -1f;
+            }
+
             DisableUIs();
 
             // create beetles, place them, and assign them controls
@@ -83,7 +97,10 @@ namespace WormWranglers.Beetle
                 // assign inputs
                 thisBeetle.GetComponentInChildren<Beetle>().AssignControls(leftSteer[i], rightSteer[i], accelerate[i], decelerate[i]);
                 thisBeetle.GetComponentInChildren<BeetleVisuals>().AssignControls(leftSteer[i], rightSteer[i]);
+                // assign index
+                thisBeetle.GetComponentInChildren<Beetle>().AssignIndex(i);
 
+                // Update controls based on controller settings
                 if (player2Gamepad && i == 1)
                 {
                     thisBeetle.GetComponentInChildren<Beetle>().AssignControls("Gamepad1Horizontal", "Gamepad1Vertical");
@@ -173,8 +190,96 @@ namespace WormWranglers.Beetle
             }
         }
 
+        public void Loser(int index)
+        {
+            Debug.Log("Loser " + index);
+            loseTimes[index] = Time.time - 3f; // accounting for the countdown
+            AssignPlace(index, DeterminePlace());
+
+            // determine if there's a winner
+            int remaining = 0;
+            int remIdx = -1;
+            for(int i = 0; i < beetleCount; i++)
+            {
+                if (loseTimes[i] == -1)
+                {
+                    remIdx = i;
+                    remaining++;
+                }
+            }
+            if (remaining == 1)
+            {
+                FindObjectOfType<Game>().End(Player.Beetle, remIdx);          
+            }
+        }
+
+        private int DeterminePlace()
+        {
+            int place = beetleCount + 1;
+            foreach (float f in loseTimes)
+            {
+                if (f > -1)
+                {
+                    place--;
+                }
+            }
+            return place;
+        }
+
+        private void AssignPlace(int index, int place)
+        {
+            string t = "";
+            switch (place)
+            {
+                case 2:
+                    t = "2nd";
+                    break;
+                case 3:
+                    t = "3rd";
+                    break;
+            }
+            if (index == 0)
+            {
+                place1.text = t;
+            }
+            else if (index == 1)
+            {
+                place2.text = t;
+            }
+            else
+            {
+                place3.text = t;
+            }
+        }
+
+        private void AssignWinner(int index)
+        {
+            string t = "Winner!";
+            if (index == 0)
+            {
+                place1.text = t;
+            }
+            else if (index == 1)
+            {
+                place2.text = t;
+            }
+            else
+            {
+                place3.text = t;
+            }
+        }
+
         private void DisableUIs()
         {
+            // assign placements to the places
+            float w = Screen.width;
+            float h = Screen.height;
+
+            place1.rectTransform.anchoredPosition = new Vector3(-w / 2f, h / 2f);
+            place2.rectTransform.anchoredPosition = new Vector3(-w / 2f, -h / 2f);
+            place3.rectTransform.anchoredPosition = new Vector3(w / 2f, -h / 2f);
+
+
             instruct1.SetActive(false);
             instruct2.SetActive(false);
             instruct3.SetActive(false);
