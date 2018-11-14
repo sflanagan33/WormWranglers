@@ -33,7 +33,7 @@ namespace WormWranglers.Beetle
 		private void Awake()
 		{
 			AnimatedFloatManager.Add(this, steer, true);
-		}
+        }
 
 		private void FixedUpdate()
 		{
