@@ -48,9 +48,9 @@ namespace WormWranglers.Beetle
             }
             else
             {
-                steer.target = Input.GetAxis(horz);
+                steer.target = Input.GetAxisRaw(horz);
                 h = steer;
-                v = Input.GetAxis(vert);
+                v = Input.GetAxisRaw(vert);
             }
 
 			// ====================================================================================
