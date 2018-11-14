@@ -1,15 +1,51 @@
 fileFormatVersion: 2
-guid: 63ef8322435390144b9ce42406122100
+guid: 9f313f23351f5cd4bbd6d7ee44c8e744
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2100000: Material
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Cube
-    4300002: CrossSection
+    100000: Eyes
+    100002: Pupils
+    100004: //RootNode
+    100006: WormHead
+    100008: WormRoad
+    100010: eye_1
+    100012: eye_2
+    100014: pupil_1
+    100016: pupil_2
+    400000: Eyes
+    400002: Pupils
+    400004: //RootNode
+    400006: WormHead
+    400008: WormRoad
+    400010: eye_1
+    400012: eye_2
+    400014: pupil_1
+    400016: pupil_2
+    2100000: unnamed
+    2300000: Eyes
+    2300002: Pupils
+    2300004: WormHead
+    2300006: WormRoad
+    2300008: eye_1
+    2300010: eye_2
+    2300012: pupil_1
+    2300014: pupil_2
+    3300000: Eyes
+    3300002: Pupils
+    3300004: WormHead
+    3300006: WormRoad
+    3300008: eye_1
+    3300010: eye_2
+    3300012: pupil_1
+    3300014: pupil_2
+    4300000: WormHead
+    4300002: Eyes
+    4300004: Pupils
+    4300006: WormRoad
+    4300008: eye_2
+    4300010: pupil_2
+    4300012: eye_1
+    4300014: pupil_1
     7400000: Default Take
     9500000: //RootNode
     2186277476908879412: ImportLogs
@@ -86,7 +122,7 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 0
