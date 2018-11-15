@@ -7,7 +7,6 @@ namespace WormWranglers.Beetle
 {
     public class BeetleManager : MonoBehaviour
     {
-
         // determine what prefab to use
         // later this can be a list, so beetles can be unique
         public GameObject beetlePrefab;
@@ -61,13 +60,13 @@ namespace WormWranglers.Beetle
                 switch (i)
                 {
                     case 0:
-                        pos = new Vector3(-1, 0, -25);
+                        pos = new Vector3(-2, 0, -20);
                         break;
                     case 1:
-                        pos = new Vector3(1, 0, -27);
+                        pos = new Vector3(2, 0, -25);
                         break;
                     case 2:
-                        pos = new Vector3(-1, 0, -29);
+                        pos = new Vector3(-2, 0, -30);
                         break;
                 }
                 // assign color (TEMPORARY)
@@ -86,7 +85,7 @@ namespace WormWranglers.Beetle
                 }
                 // this is hard coded to a specific prefab structure
                 thisBeetle.transform.Find("Visuals").GetComponent<Renderer>().material.color = col;
-                col = new Color(col.r / 3f, col.g / 3f, col.b / 3f);
+                col = new Color(col.r / 4f, col.g / 4f, col.b / 4f);
                 thisBeetle.transform.Find("Visuals").GetChild(1).GetComponent<Renderer>().material.color = col;
                 thisBeetle.transform.Find("Visuals").GetChild(2).GetComponent<Renderer>().material.color = col;
                 thisBeetle.transform.Find("Visuals").GetChild(3).GetComponent<Renderer>().material.color = col;
@@ -128,40 +127,28 @@ namespace WormWranglers.Beetle
                 else if (beetleCount == 2)
                 {
                     if (i == 0)
-                    {
                         cam.rect = new Rect(0, 0.5f, 0.5f, 0.5f);
-                    }
                     else
-                    {
                         cam.rect = new Rect(0, 0, 0.5f, 0.5f);
-                    }
                     wormCam.rect = new Rect(0.5f, 0, 0.5f, 1);
                 }
                 else if (beetleCount == 3)
                 {
                     if (i == 0)
-                    {
                         cam.rect = new Rect(0, 0.5f, 0.5f, 0.5f);
-                    }
                     else if (i == 1)
-                    {
                         cam.rect = new Rect(0, 0, 0.5f, 0.5f);
-                    }
                     else
-                    {
                         cam.rect = new Rect(0.5f, 0, 0.5f, 0.5f);
-                    }
                     wormCam.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
                 }
-
                 // Generate a UI
-
                 if (i == 0)
                 {
                     instruct1.SetActive(true);
                     instruct1.transform.GetChild(0).GetComponent<Text>().text = "BEETLE 1";
                     instruct1.transform.GetChild(1).GetComponent<Text>().text = string.Format(
-                        "{0} / {1} to steer\n{2} to accelerate\n{3} to reverse", 
+                        "{0} {1} to steer\n{2} to accelerate\n{3} to reverse", 
                         rightSteer[i].ToString(), leftSteer[i].ToString(), accelerate[i].ToString(), decelerate[i].ToString());
                 }
                 else if (i == 1)
@@ -169,29 +156,31 @@ namespace WormWranglers.Beetle
                     instruct2.SetActive(true);
                     instruct2.transform.GetChild(0).GetComponent<Text>().text = "BEETLE 2";
                     instruct2.transform.GetChild(1).GetComponent<Text>().text = string.Format(
-                        "{0} / {1} to steer\n{2} to accelerate\n{3} to reverse",
+                        "{0} {1} to steer\n{2} to accelerate\n{3} to reverse",
                         rightSteer[i].ToString(), leftSteer[i].ToString(), accelerate[i].ToString(), decelerate[i].ToString());
+
+                    if (player2Gamepad)
+                        instruct2.transform.GetChild(1).GetComponent<Text>().text = "Gamepad\nControls";
                 }
                 else if (i == 2)
                 {
                     instruct3.SetActive(true);
                     instruct3.transform.GetChild(0).GetComponent<Text>().text = "BEETLE 3";
                     instruct3.transform.GetChild(1).GetComponent<Text>().text = string.Format(
-                        "{0} / {1} to steer\n{2} to accelerate\n{3} to reverse",
+                        "{0} {1} to steer\n{2} to accelerate\n{3} to reverse",
                         rightSteer[i].ToString(), leftSteer[i].ToString(), accelerate[i].ToString(), decelerate[i].ToString());
+
+                    if (player3Gamepad)
+                        instruct3.transform.GetChild(1).GetComponent<Text>().text = "Gamepad\nControls";
                 }
-
-
                 // parent the game objects for easy access
                 thisBeetle.transform.parent = transform;
                 thisCamera.transform.parent = transform;
-
             }
         }
 
         public void Loser(int index)
         {
-            Debug.Log("Loser " + index);
             loseTimes[index] = Time.time - 3f; // accounting for the countdown
             AssignPlace(index, DeterminePlace());
 
@@ -218,9 +207,7 @@ namespace WormWranglers.Beetle
             foreach (float f in loseTimes)
             {
                 if (f > -1)
-                {
                     place--;
-                }
             }
             return place;
         }
@@ -238,46 +225,33 @@ namespace WormWranglers.Beetle
                     break;
             }
             if (index == 0)
-            {
                 place1.text = t;
-            }
             else if (index == 1)
-            {
                 place2.text = t;
-            }
             else
-            {
                 place3.text = t;
-            }
         }
 
         private void AssignWinner(int index)
         {
             string t = "Winner!";
             if (index == 0)
-            {
                 place1.text = t;
-            }
             else if (index == 1)
-            {
                 place2.text = t;
-            }
             else
-            {
                 place3.text = t;
-            }
         }
 
         private void DisableUIs()
         {
-            // assign placements to the places
+            // assign placements to their area of the screen
             float w = Screen.width;
             float h = Screen.height;
 
             place1.rectTransform.anchoredPosition = new Vector3(-w / 2f, h / 2f);
             place2.rectTransform.anchoredPosition = new Vector3(-w / 2f, -h / 2f);
             place3.rectTransform.anchoredPosition = new Vector3(w / 2f, -h / 2f);
-
 
             instruct1.SetActive(false);
             instruct2.SetActive(false);
