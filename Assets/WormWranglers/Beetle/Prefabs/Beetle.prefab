@@ -584,6 +584,9 @@ MonoBehaviour:
   thrustForce: 42
   thrustForwardDrag: 0.96
   thrustLateralDrag: 0.3
+  bumpAngle: 30
+  bumpForceUp: 7
+  bumpForceForward: 5
 --- !u!114 &114868680460639892
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -32,7 +32,6 @@ namespace WormWranglers.Beetle
         // select number of beetles
         public int beetleCount;
 
-        // I got left and right backwards
         public List<KeyCode> leftSteer;
         public List<KeyCode> rightSteer;
         public List<KeyCode> accelerate;
@@ -298,24 +297,24 @@ namespace WormWranglers.Beetle
             List<KeyCode> a = new List<KeyCode>();
             List<KeyCode> d = new List<KeyCode>();
 
-            while (rightSteer.Count < beetleCount)
-            {
-                if (rightSteer.Count == 0)
-                    rightSteer.Add(KeyCode.A);
-                if (rightSteer.Count == 1)
-                    rightSteer.Add(KeyCode.G);
-                if (rightSteer.Count == 2)
-                    rightSteer.Add(KeyCode.K);
-            }
-
             while (leftSteer.Count < beetleCount)
             {
                 if (leftSteer.Count == 0)
-                    leftSteer.Add(KeyCode.D);
+                    leftSteer.Add(KeyCode.A);
                 if (leftSteer.Count == 1)
-                    leftSteer.Add(KeyCode.J);
+                    leftSteer.Add(KeyCode.G);
                 if (leftSteer.Count == 2)
-                    leftSteer.Add(KeyCode.Semicolon);
+                    leftSteer.Add(KeyCode.K);
+            }
+
+            while (rightSteer.Count < beetleCount)
+            {
+                if (rightSteer.Count == 0)
+                    rightSteer.Add(KeyCode.D);
+                if (rightSteer.Count == 1)
+                    rightSteer.Add(KeyCode.J);
+                if (rightSteer.Count == 2)
+                    rightSteer.Add(KeyCode.Semicolon);
             }
 
             while (accelerate.Count < beetleCount)

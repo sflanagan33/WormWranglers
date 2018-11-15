@@ -38,7 +38,7 @@ namespace WormWranglers.Beetle
 
             if (!gamepad)
             {
-                turn.target = (Input.GetKey(left) ? 1 : 0) - (Input.GetKey(right) ? 1 : 0);
+                turn.target = (Input.GetKey(right) ? 1 : 0) - (Input.GetKey(left) ? 1 : 0);
             }
             else
             {

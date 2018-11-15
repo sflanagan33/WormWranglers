@@ -19,6 +19,13 @@ namespace WormWranglers.Beetle
 		public float thrustForwardDrag;
 		public float thrustLateralDrag;
 
+        public float bumpAngle;
+        public float bumpForceUp;
+        public float bumpForceForward;
+
+        // strangely physics is calculated BEFORE OnCollisionEnter so I need the value from last frame
+        private float lastFrameVelocity;
+
         // input handlers
         private bool gamepad;
         private string horz;
@@ -47,7 +54,7 @@ namespace WormWranglers.Beetle
             float h = 0, v = 0;
             if (!gamepad)
             {
-                steer.target = (Input.GetKey(left) ? 1 : 0) - (Input.GetKey(right) ? 1 : 0);
+                steer.target = (Input.GetKey(right) ? 1 : 0) - (Input.GetKey(left) ? 1 : 0);
                 h = steer;
                 v = (Input.GetKey(accel) ? 1 : 0) - (Input.GetKey(decel) ? 1 : 0);
             }
@@ -89,8 +96,11 @@ namespace WormWranglers.Beetle
 			Vector3 vV = body.velocity - vF - vL;
 
 			body.velocity = (vF * thrustForwardDrag) + (vL * thrustLateralDrag) + vV;
-			
-			// ====================================================================================
+
+            // ====================================================================================
+
+            // Store velocity
+            lastFrameVelocity = body.velocity.magnitude;
 		}
 
 		// TODO: crap code, rewrite
@@ -102,7 +112,42 @@ namespace WormWranglers.Beetle
                 loser = true;
                 FindObjectOfType<BeetleManager>().Loser(index);
             }
+            if (collision.gameObject.CompareTag(gameObject.tag))
+            {
+                Bump(collision.gameObject);
+            }
 		}
+
+        private void Bump(GameObject o)
+        {
+            // grab their rigidbody once
+            Rigidbody enemy = o.GetComponent<Rigidbody>();
+            // determine if we hit them head on
+            Vector3 dir = transform.position - o.transform.position;
+            float angle = Vector3.Angle(transform.forward, dir);
+
+            // make sure we are the bumper and not the bumpee
+            bool bumpCheck = lastFrameVelocity > o.GetComponent<Beetle>().lastFrameVelocity;
+
+            if (bumpCheck &&
+                Clamp0360(angle) >= 180 - bumpAngle && 
+                Clamp0360(angle) <= 180 + bumpAngle)
+            {
+                // a head on hit, shoot them into the air
+                enemy.AddForce(Vector3.up * bumpForceUp, ForceMode.Impulse);
+                enemy.AddForce((body.velocity - enemy.velocity) * bumpForceForward, ForceMode.Impulse);
+            }
+        }
+
+        private float Clamp0360(float eulerAngles)
+        {
+            float result = eulerAngles - Mathf.CeilToInt(eulerAngles / 360f) * 360f;
+            if (result < 0)
+            {
+                result += 360f;
+            }
+            return result;
+        }
 
         public void AssignIndex(int x)
         {
