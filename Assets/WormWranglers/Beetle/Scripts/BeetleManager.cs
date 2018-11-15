@@ -135,26 +135,26 @@ namespace WormWranglers.Beetle
 
                 if (beetleCount == 1)
                 {
-                    cam.rect = new Rect(0, 0, 0.5f, 1);
-                    wormCam.rect = new Rect(0.5f, 0, 0.5f, 1);
+                    cam.rect = new Rect(0, 0, 0.495f, 1);
+                    wormCam.rect = new Rect(0.505f, 0, 0.495f, 1);
                 }
                 else if (beetleCount == 2)
                 {
                     if (i == 0)
-                        cam.rect = new Rect(0, 0.5f, 0.5f, 0.5f);
+                        cam.rect = new Rect(0, 0.505f, 0.495f, 0.495f);
                     else
-                        cam.rect = new Rect(0, 0, 0.5f, 0.5f);
-                    wormCam.rect = new Rect(0.5f, 0, 0.5f, 1);
+                        cam.rect = new Rect(0, 0, 0.495f, 0.495f);
+                    wormCam.rect = new Rect(0.505f, 0, 0.495f, 1);
                 }
                 else if (beetleCount == 3)
                 {
                     if (i == 0)
-                        cam.rect = new Rect(0, 0.5f, 0.5f, 0.5f);
+                        cam.rect = new Rect(0, 0.505f, 0.495f, 0.495f);
                     else if (i == 1)
-                        cam.rect = new Rect(0, 0, 0.5f, 0.5f);
+                        cam.rect = new Rect(0, 0, 0.495f, 0.495f);
                     else
-                        cam.rect = new Rect(0.5f, 0, 0.5f, 0.5f);
-                    wormCam.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
+                        cam.rect = new Rect(0.505f, 0, 0.495f, 0.495f);
+                    wormCam.rect = new Rect(0.505f, 0.505f, 0.495f, 0.495f);
                 }
                 // Generate a UI
                 if (i == 0)
