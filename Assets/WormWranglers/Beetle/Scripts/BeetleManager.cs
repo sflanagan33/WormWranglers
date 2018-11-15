@@ -60,13 +60,13 @@ namespace WormWranglers.Beetle
                 switch (i)
                 {
                     case 0:
-                        pos = new Vector3(-2, 0, -20);
+                        pos = new Vector3(-2, 0, -10);
                         break;
                     case 1:
-                        pos = new Vector3(2, 0, -25);
+                        pos = new Vector3(2, 0, -15);
                         break;
                     case 2:
-                        pos = new Vector3(-2, 0, -30);
+                        pos = new Vector3(-2, 0, -20);
                         break;
                 }
                 // assign color (TEMPORARY)
@@ -197,8 +197,21 @@ namespace WormWranglers.Beetle
             }
             if (remaining == 1)
             {
-                FindObjectOfType<Game>().End(Player.Beetle, remIdx);          
+                AssignWinner(remIdx);
+                FindObjectOfType<Game>().beetleWon = true;
+                // let them drive around for a few seconds more
+                StartCoroutine(EndGame(remIdx));
             }
+        }
+
+        private IEnumerator EndGame(int remIdx)
+        {
+            yield return new WaitForSeconds(5f);
+
+            FindObjectOfType<Game>().End(Player.Beetle, remIdx);
+
+            yield return null;
+
         }
 
         private int DeterminePlace()
@@ -217,6 +230,9 @@ namespace WormWranglers.Beetle
             string t = "";
             switch (place)
             {
+                case 1:
+                    t = "Winner!";
+                    break;
                 case 2:
                     t = "2nd";
                     break;

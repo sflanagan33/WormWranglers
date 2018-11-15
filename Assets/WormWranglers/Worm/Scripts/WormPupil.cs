@@ -11,7 +11,7 @@ namespace WormWranglers.Worm
         private void Awake()
         {
             Vector3 verticalaxis = transform.TransformDirection(Vector3.up);
-            transform.RotateAround(eye.position, verticalaxis, -30f);
+            transform.RotateAround(eye.position, verticalaxis, -15f);
         }
 
         private void FixedUpdate()

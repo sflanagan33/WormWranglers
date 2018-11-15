@@ -13,6 +13,9 @@ namespace WormWranglers
 	{
 		[SerializeField] private Text text;
 
+        [HideInInspector]
+        public bool beetleWon;
+
 		private State state = State.Start;
 
 		private IEnumerator Start()
@@ -52,15 +55,23 @@ namespace WormWranglers
 		{
 			state = State.End;
 			Time.timeScale = 0f;
-            if (winner == Player.Worm)
+            if (beetleWon && idx > -1)
+            {
+                text.text = string.Format("Beetle {0} wins!", idx + 1);
+            }
+            else if (!beetleWon)
+            {
+                yield return null;
+            }
+            else if (winner == Player.Worm)
             {
                 text.text = "Worm wins!";
             }
             else
             {
-                text.text = string.Format("Beetle {0} wins!", idx + 1);
+                text.text = "Beetles win!";
             }
-			yield return new WaitForSecondsRealtime(3f);
+            yield return new WaitForSecondsRealtime(3f);
 
 			SceneManager.LoadScene(0);
 		}
