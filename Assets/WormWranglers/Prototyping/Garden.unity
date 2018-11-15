@@ -675,7 +675,7 @@ MonoBehaviour:
   place3: {fileID: 1078257468}
   player2Gamepad: 0
   player3Gamepad: 0
-  beetleCount: 3
+  beetleCount: 1
   leftSteer: 61000000670000006b000000
   rightSteer: 640000006a0000003b000000
   accelerate: 77000000790000006f000000
@@ -976,6 +976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 307201741}
+  beetleWon: 0
 --- !u!114 &1353807510
 MonoBehaviour:
   m_ObjectHideFlags: 0

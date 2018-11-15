@@ -59,10 +59,6 @@ namespace WormWranglers
             {
                 text.text = string.Format("Beetle {0} wins!", idx + 1);
             }
-            else if (!beetleWon)
-            {
-                yield return null;
-            }
             else if (winner == Player.Worm)
             {
                 text.text = "Worm wins!";
@@ -73,7 +69,7 @@ namespace WormWranglers
             }
             yield return new WaitForSecondsRealtime(3f);
 
-			SceneManager.LoadScene(0);
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 	}
 

@@ -41,6 +41,18 @@ namespace WormWranglers.Beetle
 
         private void Awake()
         {
+            beetleCount = Settings.beetleCount;
+            Debug.Log(beetleCount);
+            // see if controllers are plugged in
+            if (Input.GetJoystickNames().Length > 0)
+                player2Gamepad = true;
+            else
+                player2Gamepad = false;
+            if (Input.GetJoystickNames().Length > 1)
+                player3Gamepad = true;
+            else
+                player3Gamepad = false;
+
             // -1 means a beetle has not lost
             loseTimes = new float[beetleCount];
             for (int i = 0; i < beetleCount; i++)
@@ -202,11 +214,15 @@ namespace WormWranglers.Beetle
                 // let them drive around for a few seconds more
                 StartCoroutine(EndGame(remIdx));
             }
+            else if (!FindObjectOfType<Game>().beetleWon && remaining == 0)
+            {
+                FindObjectOfType<Game>().End(Player.Worm);
+            }
         }
 
         private IEnumerator EndGame(int remIdx)
         {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(3f);
 
             FindObjectOfType<Game>().End(Player.Beetle, remIdx);
 
@@ -227,6 +243,8 @@ namespace WormWranglers.Beetle
 
         private void AssignPlace(int index, int place)
         {
+            if (beetleCount == 1)
+                return;
             string t = "";
             switch (place)
             {
