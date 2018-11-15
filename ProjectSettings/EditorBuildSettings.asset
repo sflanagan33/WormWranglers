@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/WormWranglers/Prototyping/Garden.unity
     guid: 9c9bcb4449371b64595d784bf5dcc547
+  - enabled: 1
+    path: Assets/WormWranglers/UI/Scenes/Results.unity
+    guid: 49f474a8fb99a5d42a911229f53875a4
   m_configObjects: {}

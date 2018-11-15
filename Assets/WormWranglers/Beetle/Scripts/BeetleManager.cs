@@ -38,9 +38,11 @@ namespace WormWranglers.Beetle
 
         // Used to determine beetles' lose states
         public float[] loseTimes;
+        private float startTime;
 
         private void Awake()
         {
+            startTime = Time.time;
             beetleCount = Settings.beetleCount;
             Debug.Log(beetleCount);
             // see if controllers are plugged in
@@ -160,7 +162,7 @@ namespace WormWranglers.Beetle
                     instruct1.SetActive(true);
                     instruct1.transform.GetChild(0).GetComponent<Text>().text = "BEETLE 1";
                     instruct1.transform.GetChild(1).GetComponent<Text>().text = string.Format(
-                        "{0} {1} to steer\n{2} to accelerate\n{3} to reverse", 
+                        "{0} | {1} to steer\n{2} to accelerate\n{3} to reverse", 
                         rightSteer[i].ToString(), leftSteer[i].ToString(), accelerate[i].ToString(), decelerate[i].ToString());
                 }
                 else if (i == 1)
@@ -168,7 +170,7 @@ namespace WormWranglers.Beetle
                     instruct2.SetActive(true);
                     instruct2.transform.GetChild(0).GetComponent<Text>().text = "BEETLE 2";
                     instruct2.transform.GetChild(1).GetComponent<Text>().text = string.Format(
-                        "{0} {1} to steer\n{2} to accelerate\n{3} to reverse",
+                        "{0} | {1} to steer\n{2} to accelerate\n{3} to reverse",
                         rightSteer[i].ToString(), leftSteer[i].ToString(), accelerate[i].ToString(), decelerate[i].ToString());
 
                     if (player2Gamepad)
@@ -179,7 +181,7 @@ namespace WormWranglers.Beetle
                     instruct3.SetActive(true);
                     instruct3.transform.GetChild(0).GetComponent<Text>().text = "BEETLE 3";
                     instruct3.transform.GetChild(1).GetComponent<Text>().text = string.Format(
-                        "{0} {1} to steer\n{2} to accelerate\n{3} to reverse",
+                        "{0} | {1} to steer\n{2} to accelerate\n{3} to reverse",
                         rightSteer[i].ToString(), leftSteer[i].ToString(), accelerate[i].ToString(), decelerate[i].ToString());
 
                     if (player3Gamepad)
@@ -191,9 +193,15 @@ namespace WormWranglers.Beetle
             }
         }
 
+        private void Update()
+        {
+            // continuously store survival times
+            Settings.loseTimes = loseTimes;
+        }
+
         public void Loser(int index)
         {
-            loseTimes[index] = Time.time - 3f; // accounting for the countdown
+            loseTimes[index] = Time.time - startTime - 3f; // accounting for the countdown
             AssignPlace(index, DeterminePlace());
 
             // determine if there's a winner
