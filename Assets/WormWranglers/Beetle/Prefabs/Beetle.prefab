@@ -586,7 +586,7 @@ MonoBehaviour:
   thrustLateralDrag: 0.3
   bumpAngle: 30
   bumpForceUp: 7
-  bumpForceForward: 5
+  bumpForceForward: 10
 --- !u!114 &114868680460639892
 MonoBehaviour:
   m_ObjectHideFlags: 1
