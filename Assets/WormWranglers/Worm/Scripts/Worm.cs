@@ -13,9 +13,15 @@ namespace WormWranglers.Worm
         [SerializeField] private float segmentSize = 1f;
 
         private Vector3 cursorStoredPos = Vector3.zero;
+        private LinkedList<Vector3> points; // to find the butt's position
+        private LinkedList<Quaternion> rotations;
 
         private void Start()
         {
+            points = new LinkedList<Vector3>();
+            rotations = new LinkedList<Quaternion>();
+
+
             // Give the worm an initial length of segmentCount by moving the cursor along the ground
             // from (0, 0, (-segmentCount + 1) * segmentSize) to (0, 0, 0) in increments of segmentSize
  
@@ -25,6 +31,9 @@ namespace WormWranglers.Worm
                 cursor.distanceTraveled += segmentSize;
                 cursor.SnapToGround();
                 mesh.AddSegment(cursor);
+
+                points.AddFirst(cursor.transform.position);
+                rotations.AddFirst(cursor.transform.rotation);
             }
 
             // Bake the worm mesh so it shows up (this is the only time the mesh is triangulated)
@@ -42,8 +51,24 @@ namespace WormWranglers.Worm
                 cursorStoredPos = cursor.transform.position;
 
                 mesh.ShiftSegment(cursor);
+
+                points.AddFirst(cursor.transform.position);
+                rotations.AddFirst(cursor.transform.rotation);
+                points.RemoveLast();
+                rotations.RemoveLast();
+
                 mesh.BakeMesh(cursor, false);
             }
+        }
+
+        public Vector3 GetButtPosition()
+        {
+            return points.Last.Value;
+        }
+
+        public Quaternion GetButtRotation()
+        {
+            return rotations.Last.Value;
         }
     }
 }
