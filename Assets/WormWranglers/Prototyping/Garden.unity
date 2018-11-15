@@ -676,8 +676,8 @@ MonoBehaviour:
   player2Gamepad: 0
   player3Gamepad: 0
   beetleCount: 3
-  leftSteer: 640000006a0000003b000000
-  rightSteer: 61000000670000006b000000
+  leftSteer: 61000000670000006b000000
+  rightSteer: 640000006a0000003b000000
   accelerate: 77000000790000006f000000
   decelerate: 73000000680000006c000000
   loseTimes: []

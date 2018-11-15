@@ -259,6 +259,7 @@ namespace WormWranglers.Beetle
         }
 
         // this just makes it so you can't mess up in the editor
+        // and can easily return to preset controls
         private void OnValidate()
         {
             if (beetleCount > 3)
