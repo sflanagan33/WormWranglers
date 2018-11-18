@@ -291,9 +291,9 @@ namespace WormWranglers.Beetle
             float w = Screen.width;
             float h = Screen.height;
 
-            place1.rectTransform.anchoredPosition = new Vector3(-w / 2f, h / 2f);
-            place2.rectTransform.anchoredPosition = new Vector3(-w / 2f, -h / 2f);
-            place3.rectTransform.anchoredPosition = new Vector3(w / 2f, -h / 2f);
+            place1.rectTransform.anchoredPosition = new Vector3(-w / 4f, h / 4f);
+            place2.rectTransform.anchoredPosition = new Vector3(-w / 4f, -h / 4f);
+            place3.rectTransform.anchoredPosition = new Vector3(w / 4f, -h / 4f);
 
             instruct1.SetActive(false);
             instruct2.SetActive(false);

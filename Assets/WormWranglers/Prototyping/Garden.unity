@@ -740,7 +740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 465b58ec9324e344ab3f64643cdbe02f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beetlePrefab: {fileID: 1645010345383164, guid: 1607e9035476980459ae828fe1a03faa,
+  beetlePrefab: {fileID: 1422975244440258, guid: a71244bcc5ef52d4a8309625d1b94e52,
     type: 2}
   cameraPrefab: {fileID: 1146258182700948, guid: 6cd92a38165b21a47b2342da868d4433,
     type: 2}
@@ -814,6 +814,25 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cfa2b331509e9a041be9c82971cc3cc4, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &1039776496 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1947205212871324, guid: cfa2b331509e9a041be9c82971cc3cc4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1039776495}
+--- !u!64 &1039776497
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1039776496}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300016, guid: 1bbe48b5fd8777c4194429f766813df8, type: 3}
 --- !u!1 &1066706391
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ namespace WormWranglers.Beetle
 		[SerializeField] private Camera cam;
 
 		private LerpFloat FOV = new LerpFloat(0f, 0f, 0.1f, 2);
+        public float hOff;
+        public float vOff;
 		public float FOVBase;
 		public float FOVExpand;
 
@@ -27,7 +29,7 @@ namespace WormWranglers.Beetle
 
 			// Position
 
-			Vector3 goalPos = follow.transform.position;
+			Vector3 goalPos = follow.transform.position + (follow.transform.forward * -hOff) + (follow.transform.up * vOff);
 			transform.position = Vector3.Lerp(transform.position, goalPos, 0.3f * dt);
 
 			// Rotation
