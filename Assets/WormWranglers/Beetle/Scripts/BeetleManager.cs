@@ -98,7 +98,7 @@ namespace WormWranglers.Beetle
                         break;
                 }
                 // this is hard coded to a specific prefab structure
-                thisBeetle.transform.Find("Visuals").GetComponent<Renderer>().material.color = col;
+                // thisBeetle.transform.Find("Visuals").GetComponent<Renderer>().material.color = col;
                 col = new Color(col.r / 4f, col.g / 4f, col.b / 4f);
                 thisBeetle.transform.Find("Visuals").GetChild(1).GetComponent<Renderer>().material.color = col;
                 thisBeetle.transform.Find("Visuals").GetChild(2).GetComponent<Renderer>().material.color = col;

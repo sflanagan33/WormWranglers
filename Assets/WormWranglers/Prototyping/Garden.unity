@@ -731,7 +731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 465b58ec9324e344ab3f64643cdbe02f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beetlePrefab: {fileID: 1422975244440258, guid: a71244bcc5ef52d4a8309625d1b94e52,
+  beetlePrefab: {fileID: 1560746689951088, guid: e6c9a4d3cd49aef428f9590ca898a735,
     type: 2}
   cameraPrefab: {fileID: 1146258182700948, guid: 6cd92a38165b21a47b2342da868d4433,
     type: 2}

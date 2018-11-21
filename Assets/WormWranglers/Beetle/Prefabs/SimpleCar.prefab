@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 54061310367684078}
   - component: {fileID: 65717845663031180}
   m_Layer: 0
-  m_Name: Beetle
+  m_Name: SimpleCar
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
