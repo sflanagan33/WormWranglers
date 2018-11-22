@@ -45,6 +45,7 @@ public class MusicManager : MonoBehaviour {
 
     private void OnEnable()
     {
+        audioSource = GetComponent<AudioSource>();
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -54,7 +55,7 @@ public class MusicManager : MonoBehaviour {
         bool newSong = false; // true if the song is changed
         if (scene.name == "MainMenu" || scene.name == "PlayerSelection")
         {
-            if(audioSource.clip != startScreen)
+            if (audioSource.clip != startScreen)
                 newSong = true;
             audioSource.clip = startScreen;
         }
@@ -76,6 +77,7 @@ public class MusicManager : MonoBehaviour {
         {
             audioSource.Play();
         }
+
     }
 
 

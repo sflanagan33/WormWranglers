@@ -381,7 +381,7 @@ AudioListener:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 777080253}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &777080255
 Camera:
   m_ObjectHideFlags: 0
@@ -474,6 +474,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 82192264327732316, guid: 07f2c6a10b70786498f444e8e22a0ba6,
+        type: 2}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 82192264327732316, guid: 07f2c6a10b70786498f444e8e22a0ba6,
+        type: 2}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 828558e54cec06c4295e38381934a11f, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07f2c6a10b70786498f444e8e22a0ba6, type: 2}
   m_IsPrefabAsset: 0
