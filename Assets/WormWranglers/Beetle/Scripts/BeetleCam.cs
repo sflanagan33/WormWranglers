@@ -16,11 +16,13 @@ namespace WormWranglers.Beetle
         public float vOff;
 		public float FOVBase;
 		public float FOVExpand;
+        AudioListener del;
 
-		private void Start()
+        private void Start()
 		{
 			AnimatedFloatManager.Add(this, FOV, true);
 			FOV.value = FOV.target = FOVBase;
+            del = this.GetComponentInChildren<AudioListener>();
 		}
 
 		private void Update()
@@ -44,7 +46,8 @@ namespace WormWranglers.Beetle
 
 			FOV.target = FOVBase + (follow.velocity.magnitude * FOVExpand);
 			cam.fieldOfView = FOV;
-		}
+            Destroy(del);
+        }
 
         public void SetFollow(Rigidbody rb)
         {
