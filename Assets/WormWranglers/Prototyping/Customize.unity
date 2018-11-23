@@ -154,6 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 1146848239830406, guid: cff2640862c62f64096aa1fd46b14ce8, type: 2}
+  nextScene: Garden
 --- !u!1 &438961886
 GameObject:
   m_ObjectHideFlags: 0

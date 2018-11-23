@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using WormWranglers.Beetle;
 
 public class CustomizeCar : MonoBehaviour {
+
+    [HideInInspector]
+    public int index;
 
     // All info to choose from
 
@@ -41,7 +45,7 @@ public class CustomizeCar : MonoBehaviour {
 
     // Flow
 
-    private enum State { BeetleSelect, ColorSelect };
+    private enum State { BeetleSelect, ColorSelect, Done };
     private State state;
 
     // UI
@@ -123,12 +127,32 @@ public class CustomizeCar : MonoBehaviour {
                 else if ((!gamepad && Input.GetKeyDown(submit)) ||
                     (gamepad && Input.GetAxisRaw(vert) == 1))
                 {
-                    state = State.ColorSelect;
+                    // send info to the manager
+
+                    FinalizeSelection();
+                    state = State.Done;
                 }
                 else if ((!gamepad && Input.GetKeyDown(back)) ||
                     (gamepad && Input.GetAxisRaw(vert) == -1))
                 {
                     state = State.BeetleSelect;
+                }
+            }
+            else if (state == State.Done)
+            {
+                // message
+
+                canvas.transform.Find("Message").GetComponent<Text>().text = "WAITING FOR OTHER PLAYERS";
+
+                // input polling
+
+                if ((!gamepad && Input.GetKeyDown(back)) ||
+                    (gamepad && Input.GetAxisRaw(vert) == -1))
+                {
+                    // undo finalization
+
+                    FindObjectOfType<CustomizationManager>().RemoveBeetleSelection(index);
+                    state = State.ColorSelect;
                 }
             }
         }
@@ -208,7 +232,7 @@ public class CustomizeCar : MonoBehaviour {
     private void CreateCanvas()
     {
         canvas = Instantiate<Canvas>(canvas);
-        canvas.transform.parent = transform;
+        canvas.transform.SetParent(transform, false);
         canvas.worldCamera = GetComponent<Camera>();
 
         // assign controls
@@ -216,6 +240,33 @@ public class CustomizeCar : MonoBehaviour {
             canvas.transform.Find("Controls").GetComponent<Text>().text = "Gamepad Controls";
         else
             canvas.transform.Find("Controls").GetComponent<Text>().text = string.Format("{0} < > {1}\n{2} | {3}", left, right, submit, back);
+    }
+
+    private void FinalizeSelection()
+    {
+        // assign controls to the beetle and its visuals
+
+        if (gamepad)
+        {
+            thisModel.GetComponent<Beetle>().AssignControls(horz, vert);
+            thisModel.transform.Find("Visuals").GetComponent<BeetleVisuals>().AssignControls(horz);
+        }
+        else
+        {
+            thisModel.GetComponent<Beetle>().AssignControls(left, right, submit, back);
+            thisModel.transform.Find("Visuals").GetComponent<BeetleVisuals>().AssignControls(left, right);
+        }
+
+        // fix everything I changed for visual effect
+
+        thisModel.transform.Find("Visuals").Find("Trail").gameObject.SetActive(true);
+        thisModel.GetComponent<Rigidbody>().useGravity = true;
+        thisModel.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        thisModel.GetComponent<Rigidbody>().velocity = Vector3.zero;
+
+        // send to the manager
+
+        FindObjectOfType<CustomizationManager>().AssignFinalBeetle(thisModel, index);
     }
 
     private IEnumerator Jiggle()

@@ -69,7 +69,8 @@ namespace WormWranglers
             }
             yield return new WaitForSecondsRealtime(3f);
 
-			SceneManager.LoadScene("Results");
+            Time.timeScale = 1f;
+            SceneManager.LoadScene("Results");
 		}
 	}
 
