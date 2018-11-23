@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectionScreen : MonoBehaviour {
+public class CustomizeCar : MonoBehaviour {
 
     // All info to choose from
 
@@ -30,6 +30,9 @@ public class SelectionScreen : MonoBehaviour {
 
     // Controls to use
 
+    private bool gamepad;
+    private string horz;
+    private string vert;
     private KeyCode left = KeyCode.LeftArrow;
     private KeyCode right = KeyCode.RightArrow;
     private KeyCode submit = KeyCode.UpArrow;
@@ -43,12 +46,17 @@ public class SelectionScreen : MonoBehaviour {
 
     // UI
 
-    public Text message;
+    public Canvas canvas;
 
 
     private void Awake()
     {
         UpdateModel();
+    }
+
+    private void Start()
+    {
+        CreateCanvas();
     }
 
     private void Update()
@@ -63,25 +71,31 @@ public class SelectionScreen : MonoBehaviour {
             {
                 // message
 
-                message.text = "CHOOSE YOUR BEETLE";
+                canvas.transform.Find("Message").GetComponent<Text>().text = "CHOOSE YOUR BEETLE";
 
                 // input polling
 
-                if (Input.GetKeyDown(left))
+                // TODO: Make gamepad axis control act like getkeydown where it only fires once
+
+                if ((!gamepad && Input.GetKeyDown(left)) || 
+                    (gamepad && Input.GetAxisRaw(horz) == -1))
                 {
                     modelIdx = SlideM(modelIdx, -1);
                     UpdateModel();
                 }
-                else if (Input.GetKeyDown(right))
+                else if ((!gamepad && Input.GetKeyDown(right)) ||
+                    (gamepad && Input.GetAxisRaw(horz) == 1))
                 {
                     modelIdx = SlideM(modelIdx, 1);
                     UpdateModel();
                 }
-                else if (Input.GetKeyDown(submit))
+                else if ((!gamepad && Input.GetKeyDown(submit)) ||
+                    (gamepad && Input.GetAxisRaw(vert) == 1))
                 {
                     state = State.ColorSelect;
                 }
-                else if (Input.GetKeyDown(back))
+                else if ((!gamepad && Input.GetKeyDown(back)) ||
+                    (gamepad && Input.GetAxisRaw(vert) == -1))
                 {
                     // nothing
                 }
@@ -90,25 +104,29 @@ public class SelectionScreen : MonoBehaviour {
             {
                 // message
 
-                message.text = "CHOOSE YOUR COLOR SCHEME";
+                canvas.transform.Find("Message").GetComponent<Text>().text = "CHOOSE YOUR COLOR SCHEME";
 
                 // input polling
 
-                if (Input.GetKeyDown(left))
+                if ((!gamepad && Input.GetKeyDown(left)) ||
+                    (gamepad && Input.GetAxisRaw(horz) == -1))
                 {
                     colorIdx = SlideC(colorIdx, -1);
                     UpdateColors();
                 }
-                else if (Input.GetKeyDown(right))
+                else if ((!gamepad && Input.GetKeyDown(right)) ||
+                    (gamepad && Input.GetAxisRaw(horz) == 1))
                 {
                     colorIdx = SlideC(colorIdx, 1);
                     UpdateColors();
                 }
-                else if (Input.GetKeyDown(submit))
+                else if ((!gamepad && Input.GetKeyDown(submit)) ||
+                    (gamepad && Input.GetAxisRaw(vert) == 1))
                 {
                     state = State.ColorSelect;
                 }
-                else if (Input.GetKeyDown(back))
+                else if ((!gamepad && Input.GetKeyDown(back)) ||
+                    (gamepad && Input.GetAxisRaw(vert) == -1))
                 {
                     state = State.BeetleSelect;
                 }
@@ -187,6 +205,19 @@ public class SelectionScreen : MonoBehaviour {
         StartCoroutine(Jiggle());
     }
 
+    private void CreateCanvas()
+    {
+        canvas = Instantiate<Canvas>(canvas);
+        canvas.transform.parent = transform;
+        canvas.worldCamera = GetComponent<Camera>();
+
+        // assign controls
+        if (gamepad)
+            canvas.transform.Find("Controls").GetComponent<Text>().text = "Gamepad Controls";
+        else
+            canvas.transform.Find("Controls").GetComponent<Text>().text = string.Format("{0} < > {1}\n{2} | {3}", left, right, submit, back);
+    }
+
     private IEnumerator Jiggle()
     {
         // block inputs while it's tiny
@@ -243,5 +274,23 @@ public class SelectionScreen : MonoBehaviour {
         if (idx == baseColors.Count)
             idx = -1;
         return idx;
+    }
+
+    public void AssignControls(string x, string y)
+    {
+        gamepad = true;
+
+        horz = x;
+        vert = y;
+    }
+
+    public void AssignControls(KeyCode l, KeyCode r, KeyCode a, KeyCode d)
+    {
+        gamepad = false;
+
+        left = l;
+        right = r;
+        submit = a;
+        back = d;
     }
 }
