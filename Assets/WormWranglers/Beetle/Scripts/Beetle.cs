@@ -26,6 +26,8 @@ namespace WormWranglers.Beetle
         // strangely physics is calculated BEFORE OnCollisionEnter so I need the value from last frame
         private float lastFrameVelocity;
 
+        float h, v; // lerped input values
+
         // input handlers
         private bool gamepad;
         private string horz;
@@ -47,11 +49,12 @@ namespace WormWranglers.Beetle
 			AnimatedFloatManager.Add(this, steer, true);
         }
 
-		private void FixedUpdate()
-		{
+        private void Update()
+        {
             // Get player input (TODO: this is bad input management)
 
-            float h = 0, v = 0;
+            h = 0;
+            v = 0;
             if (!gamepad)
             {
                 steer.target = (Input.GetKey(right) ? 1 : 0) - (Input.GetKey(left) ? 1 : 0);
@@ -64,9 +67,10 @@ namespace WormWranglers.Beetle
                 h = steer;
                 v = Input.GetAxisRaw(vert);
             }
+        }
 
-			// ====================================================================================
-
+        private void FixedUpdate()
+        { 
 			// Apply turn with horizontal input and based on the current velocity
 
 			float turn = Vector3.Dot(body.velocity, transform.forward) * h * turnForce;

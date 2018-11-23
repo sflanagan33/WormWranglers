@@ -44,7 +44,6 @@ namespace WormWranglers.Beetle
         {
             startTime = Time.time;
             beetleCount = Settings.beetleCount;
-            Debug.Log(beetleCount);
             // see if controllers are plugged in
             if (Input.GetJoystickNames().Length > 0)
                 player2Gamepad = true;
