@@ -131,7 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   follow: {fileID: 0}
   cam: {fileID: 20792319160042186}
-  hOff: 10
-  vOff: 5
-  FOVBase: 60
+  hOff: 5
+  vOff: 2
+  FOVBase: 50
   FOVExpand: 0.5
