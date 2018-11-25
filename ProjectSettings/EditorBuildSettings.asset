@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/WormWranglers/Core/Scenes/Customize.unity
     guid: 34eb394db6df5d74d80a96fe2d7dc59a
   - enabled: 1
-    path: Assets/WormWranglers/Core/Scenes/Garden.unity
+    path: Assets/WormWranglers/Core/Scenes/Race.unity
     guid: 9c9bcb4449371b64595d784bf5dcc547
   - enabled: 1
     path: Assets/WormWranglers/Core/Scenes/Results.unity
