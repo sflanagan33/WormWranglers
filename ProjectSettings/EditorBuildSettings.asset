@@ -6,18 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/WormWranglers/UI/Scenes/MainMenu.unity
-    guid: 1e7e514c9b6ae404aa3865beaee4ce56
-  - enabled: 1
-    path: Assets/WormWranglers/UI/Scenes/PlayerSelection.unity
+    path: Assets/WormWranglers/Core/Scenes/MainMenu.unity
     guid: 397761d1d970a144eb38fdccd8423b07
   - enabled: 1
-    path: Assets/WormWranglers/Prototyping/Customize.unity
+    path: Assets/WormWranglers/Core/Scenes/Customize.unity
     guid: 34eb394db6df5d74d80a96fe2d7dc59a
   - enabled: 1
-    path: Assets/WormWranglers/Prototyping/Garden.unity
+    path: Assets/WormWranglers/Core/Scenes/Garden.unity
     guid: 9c9bcb4449371b64595d784bf5dcc547
   - enabled: 1
-    path: Assets/WormWranglers/UI/Scenes/Results.unity
+    path: Assets/WormWranglers/Core/Scenes/Results.unity
     guid: 49f474a8fb99a5d42a911229f53875a4
   m_configObjects: {}

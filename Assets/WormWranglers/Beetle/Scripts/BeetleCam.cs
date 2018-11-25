@@ -8,51 +8,42 @@ namespace WormWranglers.Beetle
 {
 	public class BeetleCam : MonoBehaviour
 	{
-		[SerializeField] private Rigidbody follow;
+		public Camera Camera { get { return cam; } }
+		
+		[SerializeField] private Rigidbody body;
 		[SerializeField] private Camera cam;
 
 		private LerpFloat FOV = new LerpFloat(0f, 0f, 0.1f, 2);
-        public float hOff;
-        public float vOff;
 		public float FOVBase;
 		public float FOVExpand;
-        AudioListener del;
 
         private void Start()
 		{
 			AnimatedFloatManager.Add(this, FOV, true);
 			FOV.value = FOV.target = FOVBase;
-            del = this.GetComponentInChildren<AudioListener>();
-            Destroy(del);
         }
 
         private void Update()
 		{
-            Destroy(del);
             float dt = Time.deltaTime * 60f;
 
 			// Position
 
-			Vector3 goalPos = follow.transform.position + (follow.transform.forward * -hOff) + (follow.transform.up * vOff);
+			Vector3 goalPos = body.transform.position;
 			transform.position = Vector3.Lerp(transform.position, goalPos, 0.3f * dt);
 
 			// Rotation
 			
-			Vector3 goalForward = Vector3.ProjectOnPlane(follow.transform.forward, Vector3.up);
+			Vector3 goalForward = Vector3.ProjectOnPlane(body.transform.forward, Vector3.up);
 			Quaternion goalRot = Quaternion.LookRotation(goalForward, Vector3.up);
-			goalRot = Quaternion.Slerp(goalRot, follow.transform.rotation, 0.25f);
+			goalRot = Quaternion.Slerp(goalRot, body.transform.rotation, 0.25f);
 
 			transform.rotation = Quaternion.Slerp(transform.rotation, goalRot, 0.15f * dt);
 
 			// Camera FOV
 
-			FOV.target = FOVBase + (follow.velocity.magnitude * FOVExpand);
+			FOV.target = FOVBase + (body.velocity.magnitude * FOVExpand);
 			cam.fieldOfView = FOV;
-        }
-
-        public void SetFollow(Rigidbody rb)
-        {
-            follow = rb;
         }
 	}
 }

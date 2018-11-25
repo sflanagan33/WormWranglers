@@ -13,15 +13,11 @@ namespace WormWranglers.Worm
         [SerializeField] private float segmentSize = 1f;
 
         private Vector3 cursorStoredPos = Vector3.zero;
-        private LinkedList<Vector3> points; // to find the butt's position
-        private LinkedList<Quaternion> rotations;
+        private LinkedList<Vector3> points = new LinkedList<Vector3>();
+        private LinkedList<Quaternion> rotations = new LinkedList<Quaternion>();
 
         private void Start()
         {
-            points = new LinkedList<Vector3>();
-            rotations = new LinkedList<Quaternion>();
-
-
             // Give the worm an initial length of segmentCount by moving the cursor along the ground
             // from (0, 0, (-segmentCount + 1) * segmentSize) to (0, 0, 0) in increments of segmentSize
  

@@ -77,9 +77,9 @@ InputManager:
     positiveButton: mouse 0
     altNegativeButton: 
     altPositiveButton: enter
-    gravity: 3
-    dead: 0.01
-    sensitivity: 1
+    gravity: 1000
+    dead: 0
+    sensitivity: 1000
     snap: 0
     invert: 0
     type: 0
@@ -93,9 +93,9 @@ InputManager:
     positiveButton: mouse 1
     altNegativeButton: 
     altPositiveButton: backspace
-    gravity: 3
-    dead: 0.01
-    sensitivity: 1
+    gravity: 1000
+    dead: 0
+    sensitivity: 1000
     snap: 0
     invert: 0
     type: 0

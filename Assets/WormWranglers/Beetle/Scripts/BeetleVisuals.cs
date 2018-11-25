@@ -2,13 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using WormWranglers.Core;
 using WormWranglers.Util;
 
 namespace WormWranglers.Beetle
 {
 	public class BeetleVisuals : MonoBehaviour
 	{
+        [SerializeField] private BeetleData data;   // contains the game's beetle models and palettes
+		
 		[SerializeField] private Rigidbody body;
+        [SerializeField] private MeshFilter meshFilter;
+        [SerializeField] private MeshRenderer meshRenderer;
 		[SerializeField] private Transform wheelFrontLeft;
 		[SerializeField] private Transform wheelFrontRight;
 		[SerializeField] private Transform wheelBackLeft;
@@ -18,13 +23,7 @@ namespace WormWranglers.Beetle
 		private JiggleFloat scale = new JiggleFloat(0f, 0f, 0.15f, 0.2f);
 
 		private Vector3 velocityPrev;
-
-        // input handlers
-        private bool gamepad;
-        private string horz;
-        private KeyCode left;
-        private KeyCode right;
-
+        private int index;
 
         private void Start()
 		{
@@ -36,14 +35,15 @@ namespace WormWranglers.Beetle
 		{
             // Wheel turning
 
-            if (!gamepad)
-            {
-                turn.target = (Input.GetKey(right) ? 1 : 0) - (Input.GetKey(left) ? 1 : 0);
-            }
+            BeetleControls controls = Game.BEETLE_CONTROLS[index];
+
+            if (controls.useGamepad)
+                turn.target = Input.GetAxis(controls.hor);
+            
             else
-            {
-                turn.target = Input.GetAxis(horz);
-            }
+                turn.target = (Input.GetKey(controls.right) ? 1 : 0)
+                            - (Input.GetKey(controls.left) ? 1 : 0);
+            
             Quaternion turnRot = Quaternion.Euler(0, 90 + turn * 15, 0);
 			wheelFrontLeft.localRotation = wheelFrontRight.localRotation = turnRot;
 
@@ -59,19 +59,15 @@ namespace WormWranglers.Beetle
 			transform.localScale = new Vector3(1 - scale, 1 + scale, 1 - scale);
 		}
 
-        public void AssignControls(string x)
+		public void AssignIndex(int index)
         {
-            gamepad = true;
-
-            horz = x;
-        }
-
-        public void AssignControls(KeyCode l, KeyCode r)
-        {
-            gamepad = false;
-
-            left = l;
-            right = r;
+            this.index = index;
+			
+			meshFilter.sharedMesh = data.models[Game.BEETLE_MODEL_CHOICE[index]];
+            BeetlePalette palette = data.palettes[Game.BEETLE_PALETTE_CHOICE[index]];
+            meshRenderer.materials[0].SetColor("_Color", palette.shadow);
+            meshRenderer.materials[1].SetColor("_Color", palette.main);
+            meshRenderer.materials[2].SetColor("_Color", palette.highlight);
         }
     }
 }

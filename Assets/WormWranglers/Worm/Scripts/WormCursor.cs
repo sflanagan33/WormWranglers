@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using WormWranglers.Core;
 using WormWranglers.Util;
 
 namespace WormWranglers.Worm
 {
     public class WormCursor : MonoBehaviour
     {
+        [SerializeField] private WormHead head;
         [SerializeField] private float speed;
         [SerializeField] private float rotation;
 
         [HideInInspector] public List<WormCursorPoint> points;
         [HideInInspector] public float distanceTraveled;
 
+        private RaceManager manager;
         private LerpFloat steer = new LerpFloat(0f, 0f, 0.1f, 2, -1f, 1f);
 
         private void Awake()
@@ -24,28 +27,31 @@ namespace WormWranglers.Worm
             foreach (Transform p in transform)
                 points.Add(p.GetComponent<WormCursorPoint>());
 
+            manager = FindObjectOfType<RaceManager>();
             AnimatedFloatManager.Add(this, steer, true);
         }
 
         private void Update()
         {
-            // Rotate with player input (TODO: this is bad input management)
+            if (manager.AllowInput && !head.Crashed)
+            {
+                // Rotate with player input
 
-            steer.target = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0)
-                         - (Input.GetKey(KeyCode.LeftArrow) ? 1 : 0);
+                steer.target = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0)
+                            - (Input.GetKey(KeyCode.LeftArrow) ? 1 : 0);
 
+                transform.Rotate(Vector3.up, rotation * Time.deltaTime * steer);
 
-            transform.Rotate(Vector3.up, rotation * Time.deltaTime * steer);
+                // Move in the forward direction, keeping track of the (lateral) distance traveled
 
-            // Move in the forward direction, keeping track of the (lateral) distance traveled
+                float distance = speed * Time.deltaTime;
+                transform.position += transform.forward * distance;
+                distanceTraveled += distance;
 
-            float distance = speed * Time.deltaTime;
-            transform.position += transform.forward * distance;
-            distanceTraveled += distance;
+                // Place on top of terrain again
 
-            // Place on top of terrain again
-
-            SnapToGround();
+                SnapToGround();
+            }
         }
 
         public void SnapToGround()
