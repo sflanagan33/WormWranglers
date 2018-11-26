@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Beetle Data", menuName = "Beetle Data", order = 1)]
 public class BeetleData : ScriptableObject
 {
-    public Mesh[] models;
+    public GameObject[] visuals;
     public BeetlePalette[] palettes;
 }
 

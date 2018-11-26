@@ -88,7 +88,7 @@ namespace WormWranglers.Core
                     {
                         int cur = Game.BEETLE_MODEL_CHOICE[index];
                         int add = (right ? 1 : 0) - (left ? 1 : 0);
-                        int len = data.models.Length;
+                        int len = data.visuals.Length;
 
                         Game.BEETLE_MODEL_CHOICE[index] = (cur + add + len) % len;
 
@@ -131,11 +131,14 @@ namespace WormWranglers.Core
 
             messageY.velocity += (up ? 5f : 0f) - (down ? 5f : 0f);
 
-			// ====================================================================================
+            // ====================================================================================
 
             // Update the model's appearance based on the current choices
 
-            meshFilter.sharedMesh = data.models[Game.BEETLE_MODEL_CHOICE[index]];
+            GameObject template = data.visuals[Game.BEETLE_MODEL_CHOICE[index]];
+
+            meshFilter.sharedMesh = template.GetComponent<MeshFilter>().sharedMesh;
+
             BeetlePalette palette = data.palettes[Game.BEETLE_PALETTE_CHOICE[index]];
             meshRenderer.materials[0].SetColor("_Color", palette.shadow);
             meshRenderer.materials[1].SetColor("_Color", palette.main);
@@ -145,6 +148,22 @@ namespace WormWranglers.Core
 
             model.rotation = Quaternion.Euler(0, index * 120f + Time.time * 20f, 0);
             model.localScale = new Vector3(1 - modelScale, 1 + modelScale, 1 - modelScale);
+
+            // delete the children
+            for (int i = model.childCount - 1; i > -1; i--)
+            {
+                Destroy(model.GetChild(i).gameObject);
+            }
+            // add wheels from data
+            for (int i = 1; i < template.transform.childCount; i++)
+            {
+                GameObject component = Instantiate(template.transform.GetChild(i).gameObject);
+                component.transform.position = model.TransformPoint(component.transform.position);
+                component.transform.rotation = Quaternion.Euler(component.transform.rotation.eulerAngles + model.transform.rotation.eulerAngles);
+
+                component.GetComponent<MeshRenderer>().material.SetColor("_Color", palette.shadow);
+                component.transform.SetParent(model.transform);
+            }
 
             // Move the message text
 

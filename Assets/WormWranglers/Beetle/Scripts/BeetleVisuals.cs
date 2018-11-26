@@ -62,12 +62,21 @@ namespace WormWranglers.Beetle
 		public void AssignIndex(int index)
         {
             this.index = index;
-			
-			meshFilter.sharedMesh = data.models[Game.BEETLE_MODEL_CHOICE[index]];
+
             BeetlePalette palette = data.palettes[Game.BEETLE_PALETTE_CHOICE[index]];
             meshRenderer.materials[0].SetColor("_Color", palette.shadow);
             meshRenderer.materials[1].SetColor("_Color", palette.main);
             meshRenderer.materials[2].SetColor("_Color", palette.highlight);
+
+            // Painting the wheels
+
+            transform.GetChild(1).GetComponent<MeshRenderer>().material.SetColor("_Color", palette.shadow);
+            transform.GetChild(2).GetComponent<MeshRenderer>().material.SetColor("_Color", palette.shadow);
+            transform.GetChild(3).GetComponent<MeshRenderer>().material.SetColor("_Color", palette.shadow);
+            transform.GetChild(4).GetComponent<MeshRenderer>().material.SetColor("_Color", palette.shadow);
         }
+
+        public void SetBody(Rigidbody rb) { body = rb; }
+
     }
 }

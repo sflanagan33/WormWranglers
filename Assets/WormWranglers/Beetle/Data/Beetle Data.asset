@@ -11,10 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ed0fcb9397812c4883198abe6281560, type: 3}
   m_Name: Beetle Data
   m_EditorClassIdentifier: 
-  models:
-  - {fileID: 4300000, guid: c7ddbea98d50292449d1b54ec44190bf, type: 3}
-  - {fileID: 4300000, guid: d50a2773c95dc824bb56fe6bc775f104, type: 3}
-  - {fileID: 4300000, guid: 84b9c2919d6ca404d8d56bb67d95b45e, type: 3}
+  visuals:
+  - {fileID: 1043235400542870, guid: 266c400d16bca6044b1c67660d20956b, type: 2}
+  - {fileID: 1798252889955248, guid: 5b76855db3d3aef4f95875152e24a190, type: 2}
   palettes:
   - main: {r: 0.227451, g: 0.69411767, b: 0.9058824, a: 1}
     shadow: {r: 0.15686275, g: 0.44705886, b: 0.8196079, a: 1}
@@ -22,3 +21,6 @@ MonoBehaviour:
   - main: {r: 1, g: 0.23113209, b: 0.23113209, a: 1}
     shadow: {r: 0.6509434, g: 0, b: 0.29526913, a: 1}
     highlight: {r: 1, g: 0.8321518, b: 0.5990566, a: 1}
+  - main: {r: 0, g: 0.4245283, b: 0.032804124, a: 1}
+    shadow: {r: 0.3329477, g: 0.8113208, b: 0.4141457, a: 1}
+    highlight: {r: 0.12766999, g: 0.1792453, b: 0.15059209, a: 1}

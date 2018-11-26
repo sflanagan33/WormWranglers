@@ -206,6 +206,7 @@ GameObject:
   - component: {fileID: 114013741620292710}
   - component: {fileID: 33887547588864948}
   - component: {fileID: 23306992809654462}
+  - component: {fileID: 65780396489762432}
   m_Layer: 0
   m_Name: Visuals
   m_TagString: Untagged
@@ -223,7 +224,6 @@ GameObject:
   - component: {fileID: 4504680895172724}
   - component: {fileID: 114395089524938924}
   - component: {fileID: 54852721227239040}
-  - component: {fileID: 65227113372253988}
   m_Layer: 0
   m_Name: Movement
   m_TagString: Player
@@ -657,18 +657,18 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!65 &65227113372253988
+--- !u!65 &65780396489762432
 BoxCollider:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1621816142669708}
+  m_GameObject: {fileID: 1571616906182268}
   m_Material: {fileID: 13400000, guid: a17f2d5bedfee2d47903aedd9f5dae90, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!96 &96661627464666426
 TrailRenderer:
   serializedVersion: 2
@@ -872,6 +872,7 @@ MonoBehaviour:
   movement: {fileID: 114395089524938924}
   visuals: {fileID: 114013741620292710}
   cam: {fileID: 114835980025884802}
+  data: {fileID: 11400000, guid: cc49fd722248f944ab896774a3d5c041, type: 2}
 --- !u!114 &114395089524938924
 MonoBehaviour:
   m_ObjectHideFlags: 1
