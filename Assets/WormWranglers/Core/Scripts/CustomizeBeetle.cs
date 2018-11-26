@@ -33,6 +33,7 @@ namespace WormWranglers.Core
 
         private void Start()
         {
+
             AnimatedFloatManager.Add(this, modelScale, true);
             AnimatedFloatManager.Add(this, messageX, true);
             AnimatedFloatManager.Add(this, messageY, true);
@@ -67,8 +68,9 @@ namespace WormWranglers.Core
                 {
                     left  = Input.GetKeyDown(controls.left);
                     right = Input.GetKeyDown(controls.right);
-                    up    = Input.GetKeyDown(controls.up);
-                    down  = Input.GetKeyDown(controls.down);
+                    // flipping these
+                    down    = Input.GetKeyDown(controls.up);
+                    up  = Input.GetKeyDown(controls.down);
                 }
             }
             
@@ -137,6 +139,8 @@ namespace WormWranglers.Core
 
             GameObject template = data.visuals[Game.BEETLE_MODEL_CHOICE[index]];
 
+            Vector3 actualScale = template.transform.localScale;
+
             meshFilter.sharedMesh = template.GetComponent<MeshFilter>().sharedMesh;
 
             BeetlePalette palette = data.palettes[Game.BEETLE_PALETTE_CHOICE[index]];
@@ -147,7 +151,7 @@ namespace WormWranglers.Core
             // Rotate and scale the model
 
             model.rotation = Quaternion.Euler(0, index * 120f + Time.time * 20f, 0);
-            model.localScale = new Vector3(1 - modelScale, 1 + modelScale, 1 - modelScale);
+            model.localScale = new Vector3(actualScale.x - modelScale, actualScale.y + modelScale, actualScale.z - modelScale);
 
             // delete the children
             for (int i = model.childCount - 1; i > -1; i--)
@@ -160,6 +164,7 @@ namespace WormWranglers.Core
                 GameObject component = Instantiate(template.transform.GetChild(i).gameObject);
                 component.transform.position = model.TransformPoint(component.transform.position);
                 component.transform.rotation = Quaternion.Euler(component.transform.rotation.eulerAngles + model.transform.rotation.eulerAngles);
+                component.transform.localScale = Vector3.Scale(component.transform.localScale, actualScale);
 
                 component.GetComponent<MeshRenderer>().material.SetColor("_Color", palette.shadow);
                 component.transform.SetParent(model.transform);

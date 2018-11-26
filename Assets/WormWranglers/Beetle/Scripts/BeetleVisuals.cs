@@ -23,12 +23,14 @@ namespace WormWranglers.Beetle
 		private JiggleFloat scale = new JiggleFloat(0f, 0f, 0.15f, 0.2f);
 
 		private Vector3 velocityPrev;
+        private Vector3 initScale;
         private int index;
 
         private void Start()
 		{
 			AnimatedFloatManager.Add(this, turn, true);
 			AnimatedFloatManager.Add(this, scale, true);
+            initScale = transform.localScale;
 		}
 
 		private void Update()
@@ -56,7 +58,7 @@ namespace WormWranglers.Beetle
 			scale.velocity -= Mathf.Abs(diff.x) * 0.0025f;
 			scale.velocity -= Mathf.Abs(diff.z) * 0.0025f;
 
-			transform.localScale = new Vector3(1 - scale, 1 + scale, 1 - scale);
+			transform.localScale = new Vector3(initScale.x - scale, initScale.y + scale, initScale.z - scale);
 		}
 
 		public void AssignIndex(int index)
