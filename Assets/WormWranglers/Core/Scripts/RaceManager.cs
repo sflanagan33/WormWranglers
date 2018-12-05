@@ -15,6 +15,8 @@ namespace WormWranglers.Core
         [SerializeField] private Camera wormCamera;
 		[SerializeField] private RaceOverlay wormOverlay;
         [SerializeField] private Text startText;
+		[SerializeField] private AudioSource startAudio;
+		[SerializeField] private AudioClip[] startClips;
 
         private List<Beetle.Beetle> beetles = new List<Beetle.Beetle>();
 		private List<RaceOverlay> beetleOverlays = new List<RaceOverlay>();
@@ -37,7 +39,7 @@ namespace WormWranglers.Core
                 GameObject g = Instantiate(beetlePrefab, p, Quaternion.identity);
 
                 var b = g.GetComponent<Beetle.Beetle>();
-                b.AssignIndex(i);
+                b.Initialize(i);
                 beetles.Add(b);
 
 				var o = g.GetComponentInChildren<RaceOverlay>();
@@ -62,17 +64,21 @@ namespace WormWranglers.Core
 			yield return new WaitForSeconds(2f);
 			
 			startText.text = "3";
+			startAudio.PlayOneShot(startClips[0]);
 			yield return new WaitForSeconds(1f);
 
 			startText.text = "2";
+			startAudio.PlayOneShot(startClips[0]);
 			yield return new WaitForSeconds(1f);
 
 			startText.text = "1";
+			startAudio.PlayOneShot(startClips[0]);
 			yield return new WaitForSeconds(1f);
 
 			state = State.Play;
 			Time.timeScale = 1f;
 			startText.text = "GO";
+			startAudio.PlayOneShot(startClips[1]);
 			MusicManager.Play(MusicTrack.Race);
 			yield return new WaitForSecondsRealtime(1f);
 
@@ -119,7 +125,7 @@ namespace WormWranglers.Core
 		private IEnumerator EndRoutine()
 		{
 			MusicManager.Play(MusicTrack.None);
-			yield return new WaitForSeconds(2.5f);
+			yield return new WaitForSeconds(1.75f);
 
 			MusicManager.Play(MusicTrack.Results);
 			TransitionManager.ToScene(3);

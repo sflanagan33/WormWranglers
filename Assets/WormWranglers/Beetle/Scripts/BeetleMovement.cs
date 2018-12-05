@@ -43,6 +43,11 @@ namespace WormWranglers.Beetle
             manager = FindObjectOfType<RaceManager>();
 			AnimatedFloatManager.Add(this, keycodeSteering, true);
         }
+
+        public void Initialize(int index)
+        {
+            this.index = index;
+        }
         
         // ====================================================================================================================
 
@@ -66,11 +71,11 @@ namespace WormWranglers.Beetle
                 else
                 {
                     keycodeSteering.target = (Input.GetKey(controls.right) ? 1f : 0f)
-                                        - (Input.GetKey(controls.left) ? 1f : 0f);
+                                           - (Input.GetKey(controls.left) ? 1f : 0f);
 
                     h = keycodeSteering;
                     v = (Input.GetKey(controls.up) ? 1f : 0f)
-                    - (Input.GetKey(controls.down) ? 1f : 0f);
+                      - (Input.GetKey(controls.down) ? 1f : 0f);
                 }
             }
 
@@ -131,21 +136,20 @@ namespace WormWranglers.Beetle
 
         private void Bump(GameObject o)
         {
-            // grab their rigidbody
+            // Grab their rigidbody
             Rigidbody enemy = o.GetComponent<Rigidbody>();
 
-            // determine if we hit them head on
+            // Determine if we hit them head on
             Vector3 dir = transform.position - o.transform.position;
             float angle = Vector3.Angle(transform.forward, dir);
 
-            // make sure we are the bumper and not the bumpee
+            // Make sure we are the bumper and not the bumpee
             bool bumpCheck = speedPrev > o.GetComponent<BeetleMovement>().speedPrev;
 
-            if (bumpCheck &&
-                Clamp0360(angle) >= 180 - bumpAngle && 
-                Clamp0360(angle) <= 180 + bumpAngle)
+            if (bumpCheck
+             && Clamp0360(angle) >= 180 - bumpAngle
+             && Clamp0360(angle) <= 180 + bumpAngle)
             {
-                // a head on hit, shoot them into the air
                 enemy.AddForce(Vector3.up * bumpForceUp, ForceMode.Impulse);
                 enemy.AddForce((body.velocity - enemy.velocity) * bumpForceForward, ForceMode.Impulse);
             }
@@ -158,11 +162,6 @@ namespace WormWranglers.Beetle
                 result += 360f;
             
             return result;
-        }
-
-        public void AssignIndex(int index)
-        {
-            this.index = index;
         }
 	}
 }

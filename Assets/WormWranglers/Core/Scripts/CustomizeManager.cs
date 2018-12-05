@@ -23,7 +23,7 @@ namespace WormWranglers.Core
                 GameObject g = Instantiate(beetlePrefab, p, Quaternion.identity);
 
                 CustomizeBeetle b = g.GetComponent<CustomizeBeetle>();
-                b.AssignIndex(i);
+                b.Initialize(i);
                 beetles.Add(b);
             }
 
@@ -31,6 +31,10 @@ namespace WormWranglers.Core
 
             var beetleCameras = beetles.Select(b => b.Camera).ToList();
             Game.ArrangeCameras(beetleCameras, wormCamera);
+
+            // Play the start music in case we're coming from the results scene
+
+            MusicManager.Play(MusicTrack.Start);
         }
 
         private void Update()

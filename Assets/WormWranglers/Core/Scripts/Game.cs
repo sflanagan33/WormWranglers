@@ -25,6 +25,9 @@ namespace WormWranglers.Core
             BEETLE_MODEL_CHOICE = new int[beetleCount];
             BEETLE_PALETTE_CHOICE = new int[beetleCount];
 
+            for (int i = 0; i < beetleCount; i++)
+                BEETLE_PALETTE_CHOICE[i] = i;
+
             // First player
 
             BEETLE_CONTROLS[0] = new BeetleControls(KeyCode.A, KeyCode.D, KeyCode.W, KeyCode.S);

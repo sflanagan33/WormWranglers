@@ -1,25 +1,39 @@
 fileFormatVersion: 2
-guid: c7ddbea98d50292449d1b54ec44190bf
+guid: b61e4ffc4f2d04a43a17729df9401a76
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Beetle
-    100004: BeetleWheel
+    100002: BeetleHorn
+    100004: BeetleRegular
+    100006: BeetleStag
+    100008: BeetleWheel
     400000: //RootNode
-    400002: Beetle
-    400004: BeetleWheel
-    2100000: unnamed
-    2300000: //RootNode
-    2300002: Beetle
-    2300004: BeetleWheel
-    3300000: //RootNode
-    3300002: Beetle
-    3300004: BeetleWheel
-    4300000: Beetle
-    4300002: BeetleWheel
+    400002: BeetleHorn
+    400004: BeetleRegular
+    400006: BeetleStag
+    400008: BeetleWheel
+    2100000: Main
+    2100002: Shadow
+    2100004: Highlight
+    2100006: Wheel
+    2100008: WheelShadow
+    2100010: WheelWell
+    2300000: BeetleHorn
+    2300002: BeetleRegular
+    2300004: BeetleStag
+    2300006: BeetleWheel
+    3300000: BeetleHorn
+    3300002: BeetleRegular
+    3300004: BeetleStag
+    3300006: BeetleWheel
+    4300000: BeetleStag
+    4300002: BeetleHorn
+    4300004: BeetleRegular
+    4300006: BeetleWheel
     7400000: Default Take
     9500000: //RootNode
+    2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
     importMaterials: 0
@@ -78,7 +92,7 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
-  importAnimation: 1
+  importAnimation: 0
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2
@@ -93,10 +107,10 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

@@ -33,7 +33,7 @@ namespace WormWranglers.Core
 
         public static void Play(MusicTrack track)
         {
-            if (!instance.isBusy)
+            if (!instance.isBusy && instance.audioSource.clip != instance.musicTracks[(int) track])
                 instance.StartCoroutine(instance.PlayRoutine(track));
         }
 
