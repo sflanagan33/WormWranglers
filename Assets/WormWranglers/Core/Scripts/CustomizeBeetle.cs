@@ -113,6 +113,8 @@ namespace WormWranglers.Core
                         {
                             visuals.UpdateAppearance();
                             visuals.Jiggle(Mathf.Abs(add) * -0.05f);
+                            
+                            MusicManager.Play(Sound.Tick);
                             messageX.velocity += add * 10f;
                         }
                     }
@@ -139,6 +141,8 @@ namespace WormWranglers.Core
                         {
                             visuals.UpdateAppearance();
                             visuals.Jiggle(Mathf.Abs(add) * -0.05f);
+
+                            MusicManager.Play(Sound.Tick);
                             messageX.velocity += add * 10f;
                         }
                     }
@@ -154,7 +158,11 @@ namespace WormWranglers.Core
                     break;
             }
 
-            messageY.velocity += (up ? 5f : 0f) - (down ? 5f : 0f);
+            if (up != down)
+            {
+                MusicManager.Play(Sound.Select);
+                messageY.velocity += (up ? 5f : 0f) - (down ? 5f : 0f);
+            }
 
             // ====================================================================================
 

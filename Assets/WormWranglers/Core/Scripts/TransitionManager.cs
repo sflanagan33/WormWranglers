@@ -26,6 +26,8 @@ namespace WormWranglers.Core
 				instance = this;
 				DontDestroyOnLoad(this);
 
+				AudioListener.volume = 0;
+
 				tiles = new List<TransitionTile>();
 				foreach (Transform t in grid)
 					tiles.Add(t.GetComponent<TransitionTile>());
@@ -62,8 +64,14 @@ namespace WormWranglers.Core
 			{
 				tiles[i].Show(show);
 				tiles[i + 1].Show(show);
+
+				float t = (float) i / tiles.Count;
+				AudioListener.volume = show ? 1 - t : t;
+
 				yield return new WaitForSecondsRealtime(0.01f);
 			}
+
+			AudioListener.volume = show ? 0 : 1;
 
 			yield return new WaitForSecondsRealtime(0.25f);
 		}

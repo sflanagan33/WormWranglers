@@ -92,6 +92,7 @@ namespace WormWranglers.Core
 		{
 			if (state == State.Play)
 			{
+				MusicManager.Play(Sound.Crash);
 				beetleOverlays[index].Show(placement);
 				placement--;
 
@@ -111,6 +112,7 @@ namespace WormWranglers.Core
 		{
 			if (state == State.Play)
 			{
+				MusicManager.Play(Sound.Crash);
 				wormOverlay.Show(placement);
 
 				placement = 1;

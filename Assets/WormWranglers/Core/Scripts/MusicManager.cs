@@ -5,12 +5,18 @@ using UnityEngine;
 
 namespace WormWranglers.Core
 {
+    public enum MusicTrack { None, Start, Race, Results }
+    public enum Sound { Tick, Select, Crash }
+
     public class MusicManager : MonoBehaviour
     {
         private static MusicManager instance;
 
-        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioSource musicSource;
         [SerializeField] private AudioClip[] musicTracks;
+
+        [SerializeField] private AudioSource soundSource;
+        [SerializeField] private AudioClip[] soundClips;
         
 		private bool isBusy;
         private float maxVolume = 0.6f;
@@ -28,12 +34,20 @@ namespace WormWranglers.Core
             {
                 instance = this;
                 DontDestroyOnLoad(this);
+
+                musicSource.ignoreListenerVolume = true;
+                soundSource.ignoreListenerVolume = true;
             }
+        }
+
+        public static void Play(Sound sound)
+        {
+            instance.soundSource.PlayOneShot(instance.soundClips[(int) sound]);
         }
 
         public static void Play(MusicTrack track)
         {
-            if (!instance.isBusy && instance.audioSource.clip != instance.musicTracks[(int) track])
+            if (!instance.isBusy && instance.musicSource.clip != instance.musicTracks[(int) track])
                 instance.StartCoroutine(instance.PlayRoutine(track));
         }
 
@@ -43,40 +57,35 @@ namespace WormWranglers.Core
 
             // If playing a track, fade out
 
-            if (audioSource.isPlaying)
+            if (musicSource.isPlaying)
             {
                 for (float f = 0; f < fadeOutLength; f += Time.deltaTime)
                 {
-                    audioSource.volume = (1 - f / fadeOutLength) * maxVolume;
+                    musicSource.volume = (1 - f / fadeOutLength) * maxVolume;
                     yield return null;
                 }
 
-                audioSource.volume = 0f;
-                audioSource.Stop();
+                musicSource.volume = 0f;
+                musicSource.Stop();
             }
 
             // If there's a new track, play it
 
             if (track != MusicTrack.None)
             {
-                audioSource.clip = musicTracks[(int) track];
-                audioSource.Play();
+                musicSource.clip = musicTracks[(int) track];
+                musicSource.Play();
                 
                 for (float f = 0; f < fadeInLength; f += Time.deltaTime)
                 {
-                    audioSource.volume = (f / fadeInLength) * maxVolume;
+                    musicSource.volume = (f / fadeInLength) * maxVolume;
                     yield return null;
                 }
 
-                audioSource.volume = maxVolume;
+                musicSource.volume = maxVolume;
             }
 
             isBusy = false;
         }
-    }
-
-    public enum MusicTrack
-    {
-        None, Start, Race, Results
     }
 }
